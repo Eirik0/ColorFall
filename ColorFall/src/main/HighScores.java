@@ -19,6 +19,10 @@ public class HighScores {
 
 	private static final List<HighScore> highScores = new ArrayList<>();
 
+	public static void clear() {
+		highScores.clear();
+	}
+
 	public static void init() {
 		highScores.add(new HighScore(EL_GRECO_1541));
 		highScores.add(new HighScore(HOLBEIN_1497));

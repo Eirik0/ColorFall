@@ -4,9 +4,15 @@ import java.util.Arrays;
 
 import main.HighScores.HighScore;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class HighScoresTest {
+	@Before
+	public void clearHighScores() {
+		HighScores.clear();
+	}
+
 	@Test
 	public void testAddScoreFirst() {
 		HighScores.init(Arrays.asList(HighScores.MICHELANGELO_1475, HighScores.LEONARDO_1452));
