@@ -25,7 +25,7 @@ public class ColorFallState implements GameState {
 
 	private FallingColumn fallingColumn;
 
-	//	private final GameTimer fallingColumnTimer;
+	private boolean keyDownPressed = false;
 
 	public ColorFallState(GameDelegate gameDelegate) {
 		this.gameDelegate = gameDelegate;
@@ -43,9 +43,14 @@ public class ColorFallState implements GameState {
 
 	@Override
 	public void update(long dt) {
-		fallingColumn.update(dt);
-		if (fallingColumn.wasPlaced()) {
-			placeColumn(false);
+		if (keyDownPressed) {
+			placeColumn(true);
+			keyDownPressed = false;
+		} else {
+			fallingColumn.update(dt);
+			if (fallingColumn.wasPlaced()) {
+				placeColumn(false);
+			}
 		}
 	}
 
@@ -85,7 +90,7 @@ public class ColorFallState implements GameState {
 	}
 
 	private void doKeyDown() {
-		placeColumn(true);
+		keyDownPressed = true;
 	}
 
 	private void doKeyLeft() {
