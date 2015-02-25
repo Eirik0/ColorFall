@@ -15,13 +15,12 @@ public class CosineBackground implements GameEntity {
 	private final Color color1;
 	private final Color color2;
 
-	private static double n;
+	private static double n = 0;
 
 	public CosineBackground() {
 		Random random = new Random();
 		color1 = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
 		color2 = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
-		n = 0;
 	}
 
 	@Override
@@ -40,16 +39,18 @@ public class CosineBackground implements GameEntity {
 		double theta = 0;
 		int i = 0;
 
-		g.setColor(Color.RED);
 		while (theta < 2 * Math.PI) {
 			if (i % 5 == 0) {
 				g.setColor(color1);
 			} else {
 				g.setColor(color2);
 			}
+
 			double r = halfHeight * Math.sin(n * theta);
+
 			int x = DrawingUtilities.round(r * Math.cos(theta) + halfWidth);
 			int y = DrawingUtilities.round(halfHeight - r * Math.sin(theta));
+
 			g.drawLine(x, y, x, y);
 
 			theta += dTheta;
