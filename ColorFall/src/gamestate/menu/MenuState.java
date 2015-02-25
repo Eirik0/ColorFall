@@ -1,15 +1,16 @@
 package gamestate.menu;
 
+import gameentity.background.CosineBackground;
 import gamestate.GameState;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
-import main.GameSettings;
-
 public class MenuState implements GameState {
 	protected final MenuItemList menuItems;
+
+	private final CosineBackground background = new CosineBackground();
 
 	public MenuState() {
 		menuItems = new MenuItemList();
@@ -25,11 +26,13 @@ public class MenuState implements GameState {
 
 	@Override
 	public void update(long dt) {
+		background.update(dt);
 	}
 
 	@Override
 	public void drawOn(Graphics g) {
-		drawBackground(g);
+		background.drawOn(g);
+
 		int distance = 100;
 		for (int i = 0; i < menuItems.size(); ++i) {
 			if (i == menuItems.getSelectionIndex()) {
@@ -43,11 +46,6 @@ public class MenuState implements GameState {
 				g.drawString(item.subMenu.getSelectedItem().itemName, (i + 1) * distance + 30, (i + 1) * distance + 30);
 			}
 		}
-	}
-
-	private void drawBackground(Graphics g) {
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, GameSettings.componentWidth, GameSettings.componentHeight);
 	}
 
 	@Override

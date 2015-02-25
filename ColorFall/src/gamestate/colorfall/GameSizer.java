@@ -1,6 +1,7 @@
 package gamestate.colorfall;
 
 import game.GameGrid;
+import util.DrawingUtilities;
 
 public class GameSizer {
 	private static int componentWidth;
@@ -28,8 +29,8 @@ public class GameSizer {
 
 		cellSize = Math.min((double) width / GameGrid.WIDTH, (double) height / GameGrid.HEIGHT);
 
-		gridWidth = round(cellSize * GameGrid.WIDTH);
-		gridHeight = round(cellSize * GameGrid.HEIGHT);
+		gridWidth = DrawingUtilities.round(cellSize * GameGrid.WIDTH);
+		gridHeight = DrawingUtilities.round(cellSize * GameGrid.HEIGHT);
 
 		offsetX = (double) (componentWidth - gridWidth) / 2;
 		offsetY = (double) (componentHeight - gridHeight) / 2;
@@ -58,19 +59,19 @@ public class GameSizer {
 	}
 
 	public static int getOffsetX() {
-		return round(offsetX);
+		return DrawingUtilities.round(offsetX);
 	}
 
 	public static int getOffsetY() {
-		return round(offsetY);
+		return DrawingUtilities.round(offsetY);
 	}
 
 	public static int getCellX(int x, double dx) {
-		return round(x * cellSize + dx);
+		return DrawingUtilities.round(x * cellSize + dx);
 	}
 
 	public static int getCellY(int y, double dy) {
-		return round(y * cellSize + dy);
+		return DrawingUtilities.round(y * cellSize + dy);
 	}
 
 	public static int getCellWidth(int x, double dx) {
@@ -79,9 +80,5 @@ public class GameSizer {
 
 	public static int getCellHeight(int y, double dy) {
 		return getCellY(y + 1, dy) - getCellY(y, 0);
-	}
-
-	public static int round(double d) {
-		return (int) Math.round(d);
 	}
 }

@@ -37,7 +37,7 @@ public class GameDelegate implements Runnable, KeyListener {
 	}
 
 	public void setSettings() {
-		gameImage = new BufferedImage(GameSettings.componentWidth, GameSettings.componentWidth, BufferedImage.TYPE_INT_RGB);
+		gameImage = new BufferedImage(GameSettings.componentWidth, GameSettings.componentHeight, BufferedImage.TYPE_INT_RGB);
 		gameGraphics = gameImage.createGraphics();
 
 		gamePanel.setPreferredSize(new Dimension(GameSettings.componentWidth, GameSettings.componentHeight));

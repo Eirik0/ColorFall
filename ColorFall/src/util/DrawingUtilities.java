@@ -42,4 +42,8 @@ public class DrawingUtilities {
 	public static Color getColor(int c) {
 		return PALETTE[c];
 	}
+
+	public static int round(double d) {
+		return (int) Math.round(d);
+	}
 }

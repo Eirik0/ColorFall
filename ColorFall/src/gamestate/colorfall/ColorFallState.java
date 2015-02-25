@@ -56,7 +56,7 @@ public class ColorFallState implements GameState {
 
 	@Override
 	public void drawOn(Graphics g) {
-		int c = GameSizer.round(255 / score.getLevel());
+		int c = DrawingUtilities.round(255 / score.getLevel());
 		g.setColor(new Color(c, c, c));
 		g.fillRect(0, 0, GameSizer.getComponentWidth(), GameSizer.getComponentHeight());
 		DrawingUtilities.drawGrid(g, gameGrid.getGrid());
