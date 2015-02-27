@@ -1,11 +1,8 @@
 package util;
 
 import game.GameGrid;
-import gameentity.update.CapturedCells;
-import gameentity.update.CapturedCells.CapturedCell;
 import gameentity.update.DroppingCells.DroppingCell;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GridUtilities {
@@ -23,25 +20,6 @@ public class GridUtilities {
 			System.arraycopy(grid[i], 0, newGrid[i], 0, GameGrid.HEIGHT);
 		}
 		return newGrid;
-	}
-
-	public static CapturedCells getCapturedCells(int[][] grid) {
-		List<CapturedCell> captures = new ArrayList<CapturedCell>();
-		int[][] updatedGrid = new int[GameGrid.WIDTH][GameGrid.HEIGHT];
-
-		for (int x = 0; x < GameGrid.WIDTH; ++x) {
-			for (int y = 0; y < GameGrid.HEIGHT; ++y) {
-				int color = grid[x][y];
-				if (color != GameGrid.UNPLAYED) {
-					if (GridUtilities.isSafe(grid, x, y)) {
-						updatedGrid[x][y] = color;
-					} else {
-						captures.add(new CapturedCell(x, y, color));
-					}
-				}
-			}
-		}
-		return captures.isEmpty() ? null : new CapturedCells(captures, updatedGrid);
 	}
 
 	public static boolean isSafe(int[][] grid, int x, int y) {

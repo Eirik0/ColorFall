@@ -1,6 +1,7 @@
 package game;
 
 import gameentity.update.CapturedCells;
+import gameentity.update.CapturedCells.CapturedCell;
 import gameentity.update.DroppingCells;
 import gameentity.update.DroppingCells.DroppingCell;
 import gameentity.update.UpdateEntity;
@@ -30,7 +31,7 @@ public class GameGrid {
 		return grid;
 	}
 
-	public List<UpdateEntity> placeColumn(FallingColumn column, boolean drop) {
+	public List<UpdateEntity> placeColumn(FallingColumn column, GameScore score, boolean drop) {
 		if (drop) {
 			while (column.maybeMoveDown()) {
 			}
@@ -40,36 +41,72 @@ public class GameGrid {
 		grid[column.getX()][column.getY() - 1] = column.getColor2();
 		grid[column.getX()][column.getY() - 2] = column.getColor3();
 
+		return doUpdates(score);
+	}
+
+	private List<UpdateEntity> doUpdates(GameScore score) {
 		List<UpdateEntity> updates = new ArrayList<>();
-		CapturedCells capturedCells = GridUtilities.getCapturedCells(grid);
+		int combo = 1;
+
+		CapturedCells capturedCells = getCapturedCells(score, combo);
+
 		while (capturedCells != null) {
-			int[][] updatedGrid = capturedCells.getGrid();
 			updates.add(capturedCells);
 
-			grid = GridUtilities.copyGrid(updatedGrid);
-
-			List<DroppingCell> drops = new ArrayList<DroppingCell>();
-			for (int x = 0; x < GameGrid.WIDTH; ++x) {
-				for (int y = GameGrid.HEIGHT - 2; y >= 0; --y) {
-					int color = grid[x][y];
-					if (color != GameGrid.UNPLAYED && grid[x][y + 1] == GameGrid.UNPLAYED) {
-						int dy = 1;
-						while (y + dy + 1 < GameGrid.HEIGHT && grid[x][y + dy + 1] == GameGrid.UNPLAYED) {
-							++dy;
-						}
-						drops.add(new DroppingCell(x, y, dy, color));
-						grid[x][y + dy] = color;
-						grid[x][y] = GameGrid.UNPLAYED;
-					}
-				}
+			DroppingCells droppingCells = getDroppingCells(capturedCells);
+			if (droppingCells != null) {
+				updates.add(droppingCells);
 			}
 
-			DroppingCells droppingCells = new DroppingCells(drops, GridUtilities.newGridWithoutDrops(capturedCells.getGrid(), drops));
-			updates.add(droppingCells);
-
-			capturedCells = GridUtilities.getCapturedCells(grid);
+			capturedCells = getCapturedCells(score, ++combo);
 		}
 
 		return updates;
+	}
+
+	public CapturedCells getCapturedCells(GameScore score, int combo) {
+		List<CapturedCell> captures = new ArrayList<CapturedCell>();
+		int[][] updatedGrid = new int[GameGrid.WIDTH][GameGrid.HEIGHT];
+
+		for (int x = 0; x < GameGrid.WIDTH; ++x) {
+			for (int y = 0; y < GameGrid.HEIGHT; ++y) {
+				int color = grid[x][y];
+				if (color != GameGrid.UNPLAYED) {
+					if (GridUtilities.isSafe(grid, x, y)) {
+						updatedGrid[x][y] = color;
+					} else {
+						captures.add(new CapturedCell(x, y, color));
+					}
+				}
+			}
+		}
+		if (captures.size() > 0) {
+			score.addToScore(captures.size(), combo);
+			grid = updatedGrid;
+			return new CapturedCells(captures, GridUtilities.copyGrid(updatedGrid));
+		}
+		return null;
+	}
+
+	private DroppingCells getDroppingCells(CapturedCells capturedCells) {
+		List<DroppingCell> drops = new ArrayList<DroppingCell>();
+		for (int x = 0; x < GameGrid.WIDTH; ++x) {
+			for (int y = GameGrid.HEIGHT - 2; y >= 0; --y) {
+				int color = grid[x][y];
+				if (color != GameGrid.UNPLAYED && grid[x][y + 1] == GameGrid.UNPLAYED) {
+					int dy = 1;
+					while (y + dy + 1 < GameGrid.HEIGHT && grid[x][y + dy + 1] == GameGrid.UNPLAYED) {
+						++dy;
+					}
+					drops.add(new DroppingCell(x, y, dy, color));
+					grid[x][y + dy] = color;
+					grid[x][y] = GameGrid.UNPLAYED;
+				}
+			}
+		}
+		if (drops.size() > 0) {
+			return new DroppingCells(drops, GridUtilities.newGridWithoutDrops(capturedCells.getGrid(), drops));
+		}
+		return null;
 	}
 }

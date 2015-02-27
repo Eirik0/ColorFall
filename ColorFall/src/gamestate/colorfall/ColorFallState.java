@@ -31,7 +31,7 @@ public class ColorFallState implements GameState {
 		this.gameDelegate = gameDelegate;
 
 		gameGrid = new GameGrid();
-		score = new GameScore();
+		score = new GameScore(0, 1, 0);
 
 		fallingColumn = FallingColumn.newRandom(gameGrid);
 	}
@@ -106,7 +106,7 @@ public class ColorFallState implements GameState {
 	}
 
 	private void placeColumn(boolean drop) {
-		List<UpdateEntity> updates = gameGrid.placeColumn(fallingColumn, drop);
+		List<UpdateEntity> updates = gameGrid.placeColumn(fallingColumn, score, drop);
 
 		fallingColumn = FallingColumn.newRandom(gameGrid);
 
