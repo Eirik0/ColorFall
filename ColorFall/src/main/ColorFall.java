@@ -5,11 +5,6 @@ import gamestate.menu.MenuItem;
 import gamestate.menu.MenuState;
 import gamestate.menu.OptionsMenuState;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.function.Consumer;
-
 import javax.swing.JFrame;
 
 import util.FileUtilities;
@@ -39,7 +34,6 @@ public class ColorFall {
 
 	public ColorFall(JFrame mainFrame) {
 		loadSettings();
-		loadHighScores();
 
 		mainMenuState = new MenuState();
 		mainMenuState.addMenuItem(new MenuItem("Start", () -> gameDelegate.setState(colorFallState)));
@@ -58,32 +52,14 @@ public class ColorFall {
 	}
 
 	private static void loadSettings() {
-		String filePath = System.getenv("APPDATA") + File.separator + GameSettings.SETTINGS_FOLDER_NAME + File.separator + GameSettings.SETTINGS_FILE_NAME;
-		loadFromFile(filePath, fileList -> GameSettings.init(fileList), () -> GameSettings.init());
+		FileUtilities.initFromFile(GameSettings.SETTINGS_FILE_PATH, fileList -> GameSettings.init(fileList), () -> GameSettings.init());
 	}
 
 	public static void saveSettings() {
 
 	}
 
-	private static void loadHighScores() {
-		String filePath = System.getenv("APPDATA") + File.separator + GameSettings.SETTINGS_FOLDER_NAME + File.separator + GameSettings.HIGH_SCORE_FILE_NAME;
-		loadFromFile(filePath, fileList -> HighScores.init(fileList), () -> HighScores.init());
-	}
-
 	public static void saveHighScores() {
 
-	}
-
-	private static void loadFromFile(String filePath, Consumer<List<String>> onSuccess, Runnable onFailure) {
-		File settingFile = new File(filePath);
-		if (settingFile.exists()) {
-			try {
-				onSuccess.accept(FileUtilities.fileToList(settingFile));
-				return;
-			} catch (IOException e) {
-			}
-		}
-		onFailure.run();
 	}
 }

@@ -1,9 +1,13 @@
 package main;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import util.FileUtilities;
 
 public class HighScores {
 	public static final String EL_GRECO_1541 = "El Greco,1541,0,0,0";
@@ -17,13 +21,13 @@ public class HighScores {
 	public static final String DONATELLO_1386 = "Donato di Niccolò di Betto Bardi,1386,0,0,0";
 	public static final String DUCCIO_1260 = "Duccio di Buoninsegna,1260,0,0,0";
 
-	private static final List<HighScore> highScores = new ArrayList<>();
+	private final List<HighScore> highScores = new ArrayList<>();
 
-	public static void clear() {
-		highScores.clear();
+	public static HighScores loadFromFile() {
+		return FileUtilities.loadFromFile(GameSettings.HIGH_SCORES_FILE_PATH, fileList -> new HighScores(fileList), () -> new HighScores());
 	}
 
-	public static void init() {
+	public HighScores() {
 		highScores.add(new HighScore(EL_GRECO_1541));
 		highScores.add(new HighScore(HOLBEIN_1497));
 		highScores.add(new HighScore(RAPHAEL_1483));
@@ -36,20 +40,29 @@ public class HighScores {
 		highScores.add(new HighScore(DUCCIO_1260));
 	}
 
-	public static void init(List<String> stringList) {
+	public HighScores(List<String> stringList) {
 		for (String s : stringList) {
 			highScores.add(new HighScore(s));
 		}
 	}
 
-	public static int addHighScore(HighScore highScore) {
+	public void saveToFile() throws IOException {
+		File directory = new File(GameSettings.FILE_PATH);
+		if (!directory.exists()) {
+			directory.mkdirs();
+		}
+		File file = new File(GameSettings.HIGH_SCORES_FILE_PATH);
+		FileUtilities.toFile(file, highScores, highScore -> highScore.toFileString() + System.lineSeparator());
+	}
+
+	public int addHighScore(HighScore highScore) {
 		int newScore = highScore.score;
 		int rank = getRank(newScore);
 		highScores.add(rank, highScore);
 		return rank;
 	}
 
-	private static int getRank(int newScore) {
+	private int getRank(int newScore) {
 		int rank = 0;
 		if (newScore <= highScores.get(0).score) { // Not first place
 			for (int i = highScores.size() - 1; i >= 0; --i) {
@@ -62,11 +75,11 @@ public class HighScores {
 		return rank;
 	}
 
-	public static int size() {
+	public int size() {
 		return highScores.size();
 	}
 
-	public static HighScore get(int i) {
+	public HighScore get(int i) {
 		return highScores.get(i);
 	}
 
@@ -94,6 +107,10 @@ public class HighScores {
 			this.level = level;
 			this.captures = captures;
 			this.dateTime = dateTime;
+		}
+
+		public String toFileString() {
+			return name + "," + score + "," + level + "," + captures + "," + dateTime;
 		}
 
 		@Override
