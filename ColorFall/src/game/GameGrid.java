@@ -14,8 +14,8 @@ import util.GridUtilities;
 public class GameGrid {
 	public static final int UNPLAYED = 0;
 
-	public static final int WIDTH = 8;
-	public static final int HEIGHT = 16;
+	public static final int WIDTH = 9;
+	public static final int HEIGHT = 19;
 
 	private int[][] grid;
 
