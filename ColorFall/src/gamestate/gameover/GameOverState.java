@@ -6,16 +6,20 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.io.IOException;
 
+import main.ColorFall;
 import main.GameDelegate;
 import main.GameSettings;
 import main.HighScores;
 import main.HighScores.HighScore;
 
 public class GameOverState implements GameState {
+	private final GameDelegate gameDelegate;
+
 	private HighScores highScores;
 	private final HighScore highScore;
 
 	public GameOverState(GameDelegate gameDelegate, HighScore highScore) {
+		this.gameDelegate = gameDelegate;
 		this.highScore = highScore;
 	}
 
@@ -47,5 +51,6 @@ public class GameOverState implements GameState {
 
 	@Override
 	public void keyPressed(int keyCode) {
+		gameDelegate.setState(ColorFall.instance.mainMenuState);
 	}
 }

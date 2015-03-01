@@ -12,11 +12,12 @@ import util.FileUtilities;
 public class ColorFall {
 	private static final String TITLE = "Color Fall";
 
+	public static ColorFall instance;
+
 	private final GameDelegate gameDelegate;
 
-	private final MenuState mainMenuState;
+	public final MenuState mainMenuState;
 	private final OptionsMenuState optionsMenuState;
-	private final ColorFallState colorFallState;
 
 	public static void main(String[] args) {
 		JFrame mainFrame = new JFrame(TITLE);
@@ -24,27 +25,25 @@ public class ColorFall {
 		mainFrame.setFocusable(false);
 		mainFrame.setResizable(false);
 
-		ColorFall colorFall = new ColorFall(mainFrame);
+		instance = new ColorFall(mainFrame);
 
 		mainFrame.setVisible(true);
 
-		new Thread(colorFall.gameDelegate).start();
-		colorFall.gameDelegate.gamePanel.requestFocus();
+		new Thread(instance.gameDelegate).start();
+		instance.gameDelegate.gamePanel.requestFocus();
 	}
 
 	public ColorFall(JFrame mainFrame) {
 		loadSettings();
 
 		mainMenuState = new MenuState();
-		mainMenuState.addMenuItem(new MenuItem("Start", () -> gameDelegate.setState(colorFallState)));
+		mainMenuState.addMenuItem(new MenuItem("Start", () -> gameDelegate.setState(new ColorFallState(gameDelegate))));
 		mainMenuState.addMenuItem(new MenuItem("Options", () -> gameDelegate.setState(optionsMenuState)));
 		mainMenuState.addMenuItem(new MenuItem("Exit", () -> System.exit(0)));
 
 		gameDelegate = new GameDelegate(mainMenuState);
 
 		optionsMenuState = new OptionsMenuState(gameDelegate, mainMenuState, mainFrame);
-
-		colorFallState = new ColorFallState(gameDelegate);
 
 		mainFrame.setContentPane(gameDelegate.gamePanel);
 
@@ -56,10 +55,6 @@ public class ColorFall {
 	}
 
 	public static void saveSettings() {
-
-	}
-
-	public static void saveHighScores() {
 
 	}
 }
