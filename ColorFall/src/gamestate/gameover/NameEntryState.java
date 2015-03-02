@@ -10,8 +10,8 @@ import java.util.Date;
 
 import main.GameDelegate;
 import main.GameSettings;
-import main.HighScores;
 import main.HighScores.HighScore;
+import util.GameConstants;
 
 public class NameEntryState implements GameState {
 	private final GameDelegate gameDelegate;
@@ -40,6 +40,7 @@ public class NameEntryState implements GameState {
 		g.fillRect(0, 0, GameSettings.componentWidth, GameSettings.componentHeight);
 
 		g.setColor(Color.GREEN);
+		g.setFont(GameConstants.GAME_FONT);
 		g.drawString(score.toString(), 100, 100);
 		g.drawString("Name: " + name + "_", 200, 200);
 	}

@@ -11,6 +11,7 @@ import main.GameDelegate;
 import main.GameSettings;
 import main.HighScores;
 import main.HighScores.HighScore;
+import util.GameConstants;
 
 public class GameOverState implements GameState {
 	private final GameDelegate gameDelegate;
@@ -30,8 +31,6 @@ public class GameOverState implements GameState {
 		try {
 			highScores.saveToFile();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
@@ -44,6 +43,7 @@ public class GameOverState implements GameState {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, GameSettings.componentWidth, GameSettings.componentWidth);
 		g.setColor(Color.RED);
+		g.setFont(GameConstants.GAME_FONT);
 		for (int i = 0; i < highScores.size(); ++i) {
 			g.drawString((i + 1) + ". " + highScores.get(i).toString(), 50, 50 * i + 50);
 		}

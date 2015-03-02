@@ -40,6 +40,7 @@ public class FpsTracker implements GameEntity {
 	@Override
 	public void drawOn(Graphics g) {
 		g.setColor(Color.RED);
+		g.setFont(GameConstants.GAME_FONT);
 		String percent = String.format("%,.2f%%", (1 - (currentTimeSleeping / GameConstants.ONE_SECOND)) * 100);
 		g.drawString(Integer.toString(currentFps) + " " + percent, 25, 25);
 	}

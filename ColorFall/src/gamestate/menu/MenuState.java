@@ -7,6 +7,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
+import util.GameConstants;
+
 public class MenuState implements GameState {
 	protected final MenuItemList menuItems;
 
@@ -32,6 +34,8 @@ public class MenuState implements GameState {
 	@Override
 	public void drawOn(Graphics g) {
 		background.drawOn(g);
+
+		g.setFont(GameConstants.GAME_FONT);
 
 		int distance = 100;
 		for (int i = 0; i < menuItems.size(); ++i) {

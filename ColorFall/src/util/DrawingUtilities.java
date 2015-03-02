@@ -34,6 +34,7 @@ public class DrawingUtilities {
 		} else {
 			g.setColor(Color.CYAN);
 		}
+		g.setFont(GameConstants.GAME_FONT);
 		g.drawString("Level: " + score.getLevel(), 20, 100);
 		g.drawString("Score: " + score.getScore(), 20, 200);
 		g.drawString("Captures: " + score.getCaptures(), 20, 300);
