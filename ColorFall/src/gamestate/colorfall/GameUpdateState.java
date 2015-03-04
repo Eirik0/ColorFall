@@ -1,6 +1,6 @@
 package gamestate.colorfall;
 
-import game.GameScore;
+import game.score.GameScore;
 import gameentity.update.UpdateEntity;
 import gamestate.GameState;
 
@@ -43,6 +43,7 @@ public class GameUpdateState implements GameState {
 				gameDelegate.setState(previousState);
 			}
 		}
+		score.update(dt);
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class GameUpdateState implements GameState {
 		g.setColor(new Color(c, c, c));
 		g.fillRect(0, 0, GameSizer.getComponentWidth(), GameSizer.getComponentHeight());
 		DrawingUtilities.drawGrid(g, updateEntities.get(currentUpdate).getGrid());
-		DrawingUtilities.drawScore(g, score);
+		score.drawOn(g);
 		updateEntities.get(currentUpdate).drawOn(g);
 	}
 

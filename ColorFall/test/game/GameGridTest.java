@@ -2,6 +2,7 @@ package game;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import game.score.GameScore;
 import gameentity.update.CapturedCells;
 import gameentity.update.CapturedCells.CapturedCell;
 import gameentity.update.DroppingCells;

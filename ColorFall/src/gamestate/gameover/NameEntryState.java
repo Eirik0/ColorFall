@@ -1,6 +1,6 @@
 package gamestate.gameover;
 
-import game.GameScore;
+import game.score.GameScore;
 import gamestate.GameState;
 
 import java.awt.Color;

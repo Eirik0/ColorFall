@@ -2,7 +2,7 @@ package gamestate.colorfall;
 
 import game.FallingColumn;
 import game.GameGrid;
-import game.GameScore;
+import game.score.GameScore;
 import gameentity.update.UpdateEntity;
 import gamestate.GameState;
 import gamestate.gameover.NameEntryState;
@@ -52,6 +52,7 @@ public class ColorFallState implements GameState {
 				placeColumn(false);
 			}
 		}
+		score.update(dt);
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class ColorFallState implements GameState {
 		g.setColor(new Color(c, c, c));
 		g.fillRect(0, 0, GameSizer.getComponentWidth(), GameSizer.getComponentHeight());
 		DrawingUtilities.drawGrid(g, gameGrid.getGrid());
-		DrawingUtilities.drawScore(g, score);
+		score.drawOn(g);
 		fallingColumn.drawOn(g);
 	}
 

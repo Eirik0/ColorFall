@@ -1,5 +1,6 @@
 package game;
 
+import game.score.GameScore;
 import gameentity.update.CapturedCells;
 import gameentity.update.CapturedCells.CapturedCell;
 import gameentity.update.DroppingCells;
