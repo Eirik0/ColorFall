@@ -77,7 +77,7 @@ public class NameEntryState implements GameState {
 	private void maybeCommitName() {
 		if (!name.trim().isEmpty()) {
 			HighScore highScore = new HighScore(name, score.getScore(), score.getLevel(), score.getCaptures(), new Date().getTime());
-			gameDelegate.setState(new GameOverState(gameDelegate, highScore));
+			gameDelegate.setState(new HighScoresState(gameDelegate, highScore));
 		}
 	}
 

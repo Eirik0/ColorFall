@@ -1,6 +1,7 @@
 package main;
 
 import gamestate.colorfall.ColorFallState;
+import gamestate.gameover.HighScoresState;
 import gamestate.menu.MenuItem;
 import gamestate.menu.MenuState;
 import gamestate.menu.OptionsMenuState;
@@ -17,7 +18,6 @@ public class ColorFall {
 	private final GameDelegate gameDelegate;
 
 	public final MenuState mainMenuState;
-	private final OptionsMenuState optionsMenuState;
 
 	public static void main(String[] args) {
 		JFrame mainFrame = new JFrame(TITLE);
@@ -36,17 +36,17 @@ public class ColorFall {
 	public ColorFall(JFrame mainFrame) {
 		loadSettings();
 
+		gameDelegate = new GameDelegate();
+
 		mainMenuState = new MenuState();
 		mainMenuState.addMenuItem(new MenuItem("Start", () -> gameDelegate.setState(new ColorFallState(gameDelegate))));
-		mainMenuState.addMenuItem(new MenuItem("Options", () -> gameDelegate.setState(optionsMenuState)));
+		mainMenuState.addMenuItem(new MenuItem("High Scores", () -> gameDelegate.setState(new HighScoresState(gameDelegate, null))));
+		mainMenuState.addMenuItem(new MenuItem("Options", () -> gameDelegate.setState(new OptionsMenuState(gameDelegate, mainMenuState, mainFrame))));
 		mainMenuState.addMenuItem(new MenuItem("Exit", () -> System.exit(0)));
 
-		gameDelegate = new GameDelegate(mainMenuState);
-
-		optionsMenuState = new OptionsMenuState(gameDelegate, mainMenuState, mainFrame);
+		gameDelegate.setState(mainMenuState);
 
 		mainFrame.setContentPane(gameDelegate.gamePanel);
-
 		mainFrame.pack();
 	}
 

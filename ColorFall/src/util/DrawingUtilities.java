@@ -4,7 +4,10 @@ import game.GameGrid;
 import gamestate.colorfall.GameSizer;
 
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
+
+import main.GameSettings;
 
 public class DrawingUtilities {
 	public static final Color[] PALETTE = new Color[] { Color.BLACK, Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN };
@@ -29,6 +32,13 @@ public class DrawingUtilities {
 
 	public static Color getColor(int c) {
 		return PALETTE[c];
+	}
+
+	public static void drawCenteredString(Graphics g, String text, int y) {
+		FontMetrics metrics = g.getFontMetrics();
+		double height = metrics.getHeight();
+		double width = metrics.stringWidth(text);
+		g.drawString(text, round((GameSettings.componentWidth - width) / 2), round(y + height / 3));
 	}
 
 	public static int round(double d) {

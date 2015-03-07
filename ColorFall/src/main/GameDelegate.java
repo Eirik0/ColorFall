@@ -26,14 +26,13 @@ public class GameDelegate implements Runnable, KeyListener {
 
 	public final JPanel gamePanel;
 
-	public GameDelegate(GameState initialState) {
+	public GameDelegate() {
 		gamePanel = new JPanel();
 		gamePanel.addKeyListener(this);
 
 		fpsTracker = new FpsTracker();
 
 		setSettings();
-		setState(initialState);
 	}
 
 	public void setSettings() {
