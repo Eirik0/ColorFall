@@ -5,7 +5,7 @@ import gameentity.update.CapturedCells;
 import gameentity.update.CapturedCells.CapturedCell;
 import gameentity.update.DroppingCells;
 import gameentity.update.DroppingCells.DroppingCell;
-import gameentity.update.UpdateEntity;
+import gameentity.update.GridUpdateEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class GameGrid {
 		return grid;
 	}
 
-	public List<UpdateEntity> placeColumn(FallingColumn column, GameScore score, boolean drop) {
+	public List<GridUpdateEntity> placeColumn(FallingColumn column, GameScore score, boolean drop) {
 		if (drop) {
 			while (column.maybeMoveDown()) {
 			}
@@ -45,8 +45,8 @@ public class GameGrid {
 		return doUpdates(score);
 	}
 
-	private List<UpdateEntity> doUpdates(GameScore score) {
-		List<UpdateEntity> updates = new ArrayList<>();
+	private List<GridUpdateEntity> doUpdates(GameScore score) {
+		List<GridUpdateEntity> updates = new ArrayList<>();
 		int combo = 1;
 
 		CapturedCells capturedCells = getCapturedCells(score, combo);

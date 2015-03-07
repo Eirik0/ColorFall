@@ -1,16 +1,14 @@
 package game.score;
 
-import gameentity.GameEntity;
+import gameentity.FixedDurationEntity;
 
 import java.awt.Graphics;
 
 import util.DrawingUtilities;
 import util.GameConstants;
 
-public class UpdatingScore implements GameEntity {
-	public static final long DURATION = GameConstants.ONE_SECOND / 10;
-
-	private double internalTimer = 0;
+public class UpdatingScore extends FixedDurationEntity {
+	public static final long DURATION = GameConstants.ONE_SECOND / 5;
 
 	private final int x;
 	private final int y;
@@ -20,6 +18,7 @@ public class UpdatingScore implements GameEntity {
 	private final String finishedSuffix;
 
 	public UpdatingScore(String name, int oldScore, int newScore, int x, int y) {
+		super(DURATION);
 		this.x = x;
 		this.y = y;
 
@@ -71,22 +70,13 @@ public class UpdatingScore implements GameEntity {
 	}
 
 	@Override
-	public void update(long dt) {
-		internalTimer += dt;
-	}
-
-	@Override
 	public void drawOn(Graphics g) {
-		double percentComplete = Math.min(1, internalTimer / DURATION);
+		double percentComplete = getPercentComplete();
 		g.drawString(prefix, x, y);
 		int prefixWidth = g.getFontMetrics().stringWidth(prefix);
 		int prefixHeight = g.getFontMetrics().getHeight();
 		g.drawString(pendingSuffix, x + prefixWidth, DrawingUtilities.round(y + prefixHeight - percentComplete * prefixHeight));
 		g.drawString(finishedSuffix, x + prefixWidth, DrawingUtilities.round(y - percentComplete * prefixHeight));
-	}
-
-	public boolean updateFinished() {
-		return internalTimer >= DURATION;
 	}
 
 	private static int[] toArray(int score) {

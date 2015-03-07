@@ -19,7 +19,11 @@ public class ScoreAdderTest {
 		ScoreAdder adder = new ScoreAdder("Test", 0, 0);
 		adder.add(10, 3);
 
-		adder.update(0);
+		assertEquals(0, adder.getValue());
+		assertEquals(3, adder.getQueueSize());
+
+		adder.update(UpdatingScore.DURATION / 5);
+		assertEquals(0, adder.getValue());
 		assertEquals(2, adder.getQueueSize());
 
 		adder.update(UpdatingScore.DURATION);
@@ -39,8 +43,7 @@ public class ScoreAdderTest {
 	public void testLaggyUpdate() {
 		ScoreAdder adder = new ScoreAdder("Test", 0, 0);
 		adder.add(10, 3);
-		
-		adder.update(0);
+
 		adder.update(UpdatingScore.DURATION + UpdatingScore.DURATION + UpdatingScore.DURATION);
 		assertEquals(30, adder.getValue());
 		assertEquals(0, adder.getQueueSize());

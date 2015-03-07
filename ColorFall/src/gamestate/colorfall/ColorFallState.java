@@ -3,7 +3,7 @@ package gamestate.colorfall;
 import game.FallingColumn;
 import game.GameGrid;
 import game.score.GameScore;
-import gameentity.update.UpdateEntity;
+import gameentity.update.GridUpdateEntity;
 import gamestate.GameState;
 import gamestate.gameover.NameEntryState;
 import gamestate.menu.PauseMenuState;
@@ -107,7 +107,7 @@ public class ColorFallState implements GameState {
 	}
 
 	private void placeColumn(boolean drop) {
-		List<UpdateEntity> updates = gameGrid.placeColumn(fallingColumn, score, drop);
+		List<GridUpdateEntity> updates = gameGrid.placeColumn(fallingColumn, score, drop);
 
 		fallingColumn = FallingColumn.newRandom(gameGrid);
 

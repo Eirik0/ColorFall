@@ -1,7 +1,7 @@
 package gamestate.colorfall;
 
 import game.score.GameScore;
-import gameentity.update.UpdateEntity;
+import gameentity.update.GridUpdateEntity;
 import gamestate.GameState;
 
 import java.awt.Color;
@@ -17,10 +17,10 @@ public class GameUpdateState implements GameState {
 	private final ColorFallState previousState;
 	private final GameScore score;
 
-	private final List<UpdateEntity> updateEntities;
+	private final List<GridUpdateEntity> updateEntities;
 	private int currentUpdate;
 
-	public GameUpdateState(GameDelegate gameDelegate, ColorFallState previousState, GameScore score, List<UpdateEntity> updateEntities) {
+	public GameUpdateState(GameDelegate gameDelegate, ColorFallState previousState, GameScore score, List<GridUpdateEntity> updateEntities) {
 		this.gameDelegate = gameDelegate;
 
 		this.previousState = previousState;
@@ -37,7 +37,7 @@ public class GameUpdateState implements GameState {
 	@Override
 	public void update(long dt) {
 		updateEntities.get(currentUpdate).update(dt);
-		if (updateEntities.get(currentUpdate).updateFinished()) {
+		if (updateEntities.get(currentUpdate).isFinished()) {
 			++currentUpdate;
 			if (currentUpdate == updateEntities.size()) {
 				gameDelegate.setState(previousState);

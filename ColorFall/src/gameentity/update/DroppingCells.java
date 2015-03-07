@@ -8,15 +8,14 @@ import java.util.List;
 import util.DrawingUtilities;
 import util.GameConstants;
 
-public class DroppingCells implements UpdateEntity {
+public class DroppingCells extends GridUpdateEntity {
 	private static final long DURATION = GameConstants.ONE_SECOND / 5;
-
-	private double internalTimer = 0;
 
 	private final List<DroppingCell> drops;
 	private final int[][] grid;
 
 	public DroppingCells(List<DroppingCell> drops, int[][] grid) {
+		super(DURATION);
 		this.drops = drops;
 		this.grid = grid;
 	}
@@ -31,22 +30,12 @@ public class DroppingCells implements UpdateEntity {
 	}
 
 	@Override
-	public void update(long dt) {
-		internalTimer += dt;
-	}
-
-	@Override
 	public void drawOn(Graphics g) {
-		double percentComplete = Math.min(1, internalTimer / DURATION);
+		double percentComplete = getPercentComplete();
 		for (DroppingCell drop : drops) {
 			double dy = percentComplete * GameSizer.getCellSize() * drop.dy + GameSizer.getOffsetY();
 			DrawingUtilities.drawCell(g, drop.x, drop.y, drop.color, GameSizer.getOffsetX(), dy);
 		}
-	}
-
-	@Override
-	public boolean updateFinished() {
-		return internalTimer >= DURATION;
 	}
 
 	public static class DroppingCell {

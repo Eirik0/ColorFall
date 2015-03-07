@@ -7,7 +7,7 @@ import gameentity.update.CapturedCells;
 import gameentity.update.CapturedCells.CapturedCell;
 import gameentity.update.DroppingCells;
 import gameentity.update.DroppingCells.DroppingCell;
-import gameentity.update.UpdateEntity;
+import gameentity.update.GridUpdateEntity;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class GameGridTest {
 		GameGrid grid = new GameGrid();
 		GameScore score = new GameScore(0, 1, 0);
 
-		List<UpdateEntity> updates = grid.placeColumn(new FallingColumn(grid, 1, 1, 1, 0, 0), score, true);
+		List<GridUpdateEntity> updates = grid.placeColumn(new FallingColumn(grid, 1, 1, 1, 0, 0), score, true);
 
 		assertEquals(1, updates.size());
 		assertTrue(updates.get(0) instanceof CapturedCells);
@@ -78,7 +78,7 @@ public class GameGridTest {
 		grid.placeColumn(new FallingColumn(grid, 1, 2, 3, 0, 0), new GameScore(0, 1, 0), true);
 		grid.placeColumn(new FallingColumn(grid, 1, 4, 5, 1, 0), new GameScore(0, 1, 0), true);
 
-		List<UpdateEntity> updates = grid.placeColumn(new FallingColumn(grid, 1, 6, 7, 2, 0), new GameScore(0, 1, 0), true);
+		List<GridUpdateEntity> updates = grid.placeColumn(new FallingColumn(grid, 1, 6, 7, 2, 0), new GameScore(0, 1, 0), true);
 
 		assertTrue(updates.get(0) instanceof CapturedCells);
 		assertTrue(updates.get(1) instanceof DroppingCells);
@@ -185,7 +185,7 @@ public class GameGridTest {
 		GameScore score = new GameScore(0, 2, 0);
 		grid.placeColumn(new FallingColumn(grid, 2, 5, 1, 2, 0), score, true);
 		grid.placeColumn(new FallingColumn(grid, 2, 1, 4, 1, 0), score, true);
-		List<UpdateEntity> updates = grid.placeColumn(new FallingColumn(grid, 1, 2, 3, 0, 0), score, true);
+		List<GridUpdateEntity> updates = grid.placeColumn(new FallingColumn(grid, 1, 2, 3, 0, 0), score, true);
 
 		assertTrue(updates.get(0) instanceof CapturedCells);
 		assertTrue(updates.get(1) instanceof DroppingCells);

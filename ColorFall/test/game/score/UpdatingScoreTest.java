@@ -2,14 +2,9 @@ package game.score;
 
 import static org.junit.Assert.assertEquals;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-
 import org.junit.Test;
 
 public class UpdatingScoreTest {
-	private final Graphics2D fakeGraphics = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB).createGraphics();
-
 	@Test
 	public void test_1_1() {
 		UpdatingScore updatingScore = new UpdatingScore("Test", 1, 2, 0, 0);

@@ -28,18 +28,19 @@ public class ScoreAdder implements GameEntity {
 
 	@Override
 	public void update(long dt) {
-		while (dt >= 0) {
-			if (currentUpdate == null) {
-				pollQueue();
-			} else {
-				currentUpdate.update(dt);
-				if (currentUpdate.updateFinished()) {
-					currentUpdate = null;
-					value = nextValue;
-					pollQueue();
-				}
+		if (currentUpdate == null) {
+			pollQueue();
+			if (currentUpdate != null) {
+				update(dt);
 			}
-			dt -= UpdatingScore.DURATION;
+		} else {
+			currentUpdate.update(dt);
+			if (currentUpdate.isFinished()) {
+				long excessTime = currentUpdate.getExcessTime();
+				currentUpdate = null;
+				value = nextValue;
+				update(excessTime);
+			}
 		}
 	}
 

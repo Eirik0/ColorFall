@@ -8,15 +8,14 @@ import java.util.List;
 import util.DrawingUtilities;
 import util.GameConstants;
 
-public class CapturedCells implements UpdateEntity {
+public class CapturedCells extends GridUpdateEntity {
 	private static final long DURATION = GameConstants.ONE_SECOND / 5;
-
-	private double internalTimer = 0;
 
 	private final List<CapturedCell> captures;
 	private final int[][] grid;
 
 	public CapturedCells(List<CapturedCell> captures, int[][] grid) {
+		super(DURATION);
 		this.captures = captures;
 		this.grid = grid;
 	}
@@ -31,13 +30,8 @@ public class CapturedCells implements UpdateEntity {
 	}
 
 	@Override
-	public void update(long dt) {
-		internalTimer += dt;
-	}
-
-	@Override
 	public void drawOn(Graphics g) {
-		double percentComplete = Math.min(1, internalTimer / DURATION);
+		double percentComplete = getPercentComplete();
 		double d = GameSizer.getCellSize() * percentComplete;
 		for (CapturedCell capture : captures) {
 			int x0 = GameSizer.getCellX(capture.x, GameSizer.getOffsetX() + d / 2);
@@ -48,11 +42,6 @@ public class CapturedCells implements UpdateEntity {
 			g.setColor(DrawingUtilities.getColor(capture.color));
 			g.fillOval(x0, y0, width, height);
 		}
-	}
-
-	@Override
-	public boolean updateFinished() {
-		return internalTimer >= DURATION;
 	}
 
 	public static class CapturedCell {
