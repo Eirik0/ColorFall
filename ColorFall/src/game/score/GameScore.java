@@ -13,7 +13,7 @@ public class GameScore implements GameEntity {
 	private static final int LEVEL_Y = 200;
 	private static final int CAPTURES_Y = 300;
 
-	private static final int CAPTURES_PER_LEVEL = 100;
+	private static final int CAPTURES_PER_LEVEL = 50;
 
 	private int score;
 	private int level;
@@ -36,11 +36,7 @@ public class GameScore implements GameEntity {
 
 	@Override
 	public void drawOn(Graphics g) {
-		if (level == 1) {
-			g.setColor(Color.BLACK);
-		} else {
-			g.setColor(Color.CYAN);
-		}
+		g.setColor(Color.BLACK);
 		g.setFont(GameConstants.GAME_FONT);
 		scoreAdder.drawOn(g);
 		g.drawString("Level: " + level, LEFT_PADDING, LEVEL_Y);

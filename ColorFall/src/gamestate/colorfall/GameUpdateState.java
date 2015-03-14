@@ -1,10 +1,10 @@
 package gamestate.colorfall;
 
 import game.score.GameScore;
+import gameentity.background.LevelBackground;
 import gameentity.update.GridUpdateEntity;
 import gamestate.GameState;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.util.List;
 
@@ -13,18 +13,22 @@ import util.DrawingUtilities;
 
 public class GameUpdateState implements GameState {
 	private final GameDelegate gameDelegate;
-
 	private final ColorFallState previousState;
+
+	private final LevelBackground levelBackground;
+
 	private final GameScore score;
 
 	private final List<GridUpdateEntity> updateEntities;
 	private int currentUpdate;
 
-	public GameUpdateState(GameDelegate gameDelegate, ColorFallState previousState, GameScore score, List<GridUpdateEntity> updateEntities) {
+	public GameUpdateState(GameDelegate gameDelegate, ColorFallState colorFallState, List<GridUpdateEntity> updateEntities) {
 		this.gameDelegate = gameDelegate;
+		previousState = colorFallState;
 
-		this.previousState = previousState;
-		this.score = score;
+		levelBackground = colorFallState.levelBackground;
+
+		score = colorFallState.score;
 
 		this.updateEntities = updateEntities;
 		currentUpdate = 0;
@@ -43,14 +47,14 @@ public class GameUpdateState implements GameState {
 				gameDelegate.setState(previousState);
 			}
 		}
+		levelBackground.maybeLevelUp(score.getLevel());
+		levelBackground.update(dt);
 		score.update(dt);
 	}
 
 	@Override
 	public void drawOn(Graphics g) {
-		int c = DrawingUtilities.round(255 / score.getLevel());
-		g.setColor(new Color(c, c, c));
-		g.fillRect(0, 0, GameSizer.getComponentWidth(), GameSizer.getComponentHeight());
+		levelBackground.drawOn(g);
 		DrawingUtilities.drawGrid(g, updateEntities.get(currentUpdate).getGrid());
 		score.drawOn(g);
 		updateEntities.get(currentUpdate).drawOn(g);

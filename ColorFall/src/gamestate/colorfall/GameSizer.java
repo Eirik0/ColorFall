@@ -4,9 +4,6 @@ import game.GameGrid;
 import util.DrawingUtilities;
 
 public class GameSizer {
-	private static int componentWidth;
-	private static int componentHeight;
-
 	private static double cellSize;
 
 	private static int gridWidth;
@@ -19,31 +16,18 @@ public class GameSizer {
 		resizeTo(width, height);
 	}
 
-	public static boolean resizeTo(int width, int height) {
-		if ((width <= 0 || height <= 0) || (width == componentWidth && height == componentHeight)) {
-			return false;
+	public static void resizeTo(int componentWidth, int componentHeight) {
+		if ((componentWidth <= 0 || componentHeight <= 0)) {
+			return;
 		}
 
-		componentWidth = width;
-		componentHeight = height;
-
-		cellSize = Math.min((double) width / GameGrid.WIDTH, (double) height / GameGrid.HEIGHT);
+		cellSize = Math.min((double) componentWidth / GameGrid.WIDTH, (double) componentHeight / GameGrid.HEIGHT);
 
 		gridWidth = DrawingUtilities.round(cellSize * GameGrid.WIDTH);
 		gridHeight = DrawingUtilities.round(cellSize * GameGrid.HEIGHT);
 
 		offsetX = (double) (componentWidth - gridWidth) / 2;
 		offsetY = (double) (componentHeight - gridHeight) / 2;
-
-		return true;
-	}
-
-	public static int getComponentWidth() {
-		return componentWidth;
-	}
-
-	public static int getComponentHeight() {
-		return componentHeight;
 	}
 
 	public static double getCellSize() {
