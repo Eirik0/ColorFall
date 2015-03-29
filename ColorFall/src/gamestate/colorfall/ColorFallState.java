@@ -35,7 +35,7 @@ public class ColorFallState implements GameState {
 		gameGrid = new GameGrid();
 		score = new GameScore(0, 1, 0);
 
-		fallingColumn = FallingColumn.newRandom(gameGrid);
+		fallingColumn = FallingColumn.newRandom(gameGrid, 1);
 
 		levelBackground = new LevelBackground(1);
 	}
@@ -112,7 +112,7 @@ public class ColorFallState implements GameState {
 	private void placeColumn(boolean drop) {
 		List<GridUpdateEntity> updates = gameGrid.placeColumn(fallingColumn, score, drop);
 
-		fallingColumn = FallingColumn.newRandom(gameGrid);
+		fallingColumn = FallingColumn.newRandom(gameGrid, score.getLevel());
 
 		if (updates.size() > 0) {
 			gameDelegate.setState(new GameUpdateState(gameDelegate, this, updates));

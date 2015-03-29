@@ -11,7 +11,7 @@ import util.GameConstants;
 public class FallingColumnTest {
 	@Test
 	public void testRotateOnce() {
-		FallingColumn column = new FallingColumn(null, 1, 2, 3, 0, 0);
+		FallingColumn column = new FallingColumn(null, 1, 2, 3);
 
 		column.rotate();
 
@@ -22,7 +22,7 @@ public class FallingColumnTest {
 
 	@Test
 	public void testRotateTwice() {
-		FallingColumn column = new FallingColumn(null, 1, 2, 3, 0, 0);
+		FallingColumn column = new FallingColumn(null, 1, 2, 3);
 
 		column.rotate();
 		column.rotate();
@@ -34,7 +34,7 @@ public class FallingColumnTest {
 
 	@Test
 	public void testRotateThrice() {
-		FallingColumn column = new FallingColumn(null, 1, 2, 3, 0, 0);
+		FallingColumn column = new FallingColumn(null, 1, 2, 3);
 
 		column.rotate();
 		column.rotate();
@@ -48,7 +48,7 @@ public class FallingColumnTest {
 	@Test
 	public void testUpdate() {
 		GameGrid gameGrid = new GameGrid();
-		FallingColumn column = new FallingColumn(gameGrid, 1, 2, 3, 0, 0);
+		FallingColumn column = new FallingColumn(gameGrid, 1, 2, 3);
 		column.update(50);
 		assertEquals(0, column.getY());
 		for (int i = 1; i < GameGrid.HEIGHT; ++i) {

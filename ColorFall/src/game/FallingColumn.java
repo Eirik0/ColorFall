@@ -14,6 +14,8 @@ public class FallingColumn implements GameEntity {
 
 	private final GameGrid gameGrid;
 
+	private final long duration;
+
 	private int color1;
 	private int color2;
 	private int color3;
@@ -24,12 +26,19 @@ public class FallingColumn implements GameEntity {
 	private long internalTimer = 0;
 	private boolean wasPlaced = false;
 
-	public static FallingColumn newRandom(GameGrid gameGrid) {
-		return new FallingColumn(gameGrid, randomColor(), randomColor(), randomColor(), GameGrid.WIDTH / 2, 2);
+	public static FallingColumn newRandom(GameGrid gameGrid, int level) {
+		long duration = (long) (Math.max(1.0525 - 0.0525 * level, 0.05) * GameConstants.ONE_SECOND);
+		return new FallingColumn(gameGrid, duration, randomColor(), randomColor(), randomColor(), GameGrid.WIDTH / 2, 2);
 	}
 
-	public FallingColumn(GameGrid gameGrid, int color1, int color2, int color3, int x, int y) {
+	FallingColumn(GameGrid gameGrid, int color1, int color2, int color3) {
+		this(gameGrid, GameConstants.ONE_SECOND, color1, color2, color3, 0, 0);
+	}
+
+	private FallingColumn(GameGrid gameGrid, long duration, int color1, int color2, int color3, int x, int y) {
 		this.gameGrid = gameGrid;
+
+		this.duration = duration;
 
 		this.color1 = color1;
 		this.color2 = color2;
@@ -46,7 +55,7 @@ public class FallingColumn implements GameEntity {
 	@Override
 	public void update(long dt) {
 		internalTimer += dt;
-		if (internalTimer >= GameConstants.ONE_SECOND) {
+		if (internalTimer >= duration) {
 			wasPlaced = !maybeMoveDown();
 		}
 	}
