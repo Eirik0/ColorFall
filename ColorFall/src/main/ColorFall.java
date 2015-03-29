@@ -30,6 +30,7 @@ public class ColorFall {
 		mainFrame.setVisible(true);
 
 		new Thread(instance.gameDelegate).start();
+
 		instance.gameDelegate.gamePanel.requestFocus();
 	}
 

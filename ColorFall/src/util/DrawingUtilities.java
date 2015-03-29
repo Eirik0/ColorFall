@@ -38,7 +38,7 @@ public class DrawingUtilities {
 		FontMetrics metrics = g.getFontMetrics();
 		double height = metrics.getHeight();
 		double width = metrics.stringWidth(text);
-		g.drawString(text, round((GameSettings.componentWidth - width) / 2), round(y + height / 3));
+		g.drawString(text, round((GameSettings.componentWidth - width) / 2), round(y + height / 2));
 	}
 
 	public static int round(double d) {
