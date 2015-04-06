@@ -6,7 +6,6 @@ import gamestate.GameState;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.util.Date;
 
 import main.GameDelegate;
 import main.GameSettings;
@@ -76,7 +75,7 @@ public class NameEntryState implements GameState {
 
 	private void maybeCommitName() {
 		if (!name.trim().isEmpty()) {
-			HighScore highScore = new HighScore(name, score.getScore(), score.getLevel(), score.getCaptures(), new Date().getTime());
+			HighScore highScore = new HighScore(name, score.getScore(), score.getLevel(), score.getCaptures(), score.getTime());
 			gameDelegate.setState(new HighScoresState(gameDelegate, highScore));
 		}
 	}

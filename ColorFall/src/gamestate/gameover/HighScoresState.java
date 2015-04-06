@@ -64,8 +64,9 @@ public class HighScoresState implements GameState {
 		g.setColor(Color.RED);
 		g.setFont(GameConstants.GAME_FONT.deriveFont(Font.PLAIN, 30));
 		HighScore topScore = highScores.get(0);
-		DrawingUtilities.drawCenteredString(g, "1. " + topScore.name, SPACE_BETWEEN_SCORES);
-		String topScoreLine2 = "Score: " + topScore.score + "   Level: " + topScore.level + "   Captures: " + topScore.captures;
+		String topScoreLine1 = "1. " + topScore.name + "   Score: " + topScore.score;
+		String topScoreLine2 = "Level: " + topScore.level + "   Captures: " + topScore.captures + "   Time: " + DrawingUtilities.formatTime(topScore.time);
+		DrawingUtilities.drawCenteredString(g, topScoreLine1, SPACE_BETWEEN_SCORES);
 		DrawingUtilities.drawCenteredString(g, topScoreLine2, 2 * SPACE_BETWEEN_SCORES);
 
 		scrollGraphcis.setColor(Color.BLACK);

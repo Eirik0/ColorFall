@@ -81,7 +81,7 @@ public class GameDelegate implements Runnable, KeyListener {
 			if (timeToSleep > 0) {
 				fpsTracker.addTimeSleeping(timeToSleep);
 				try {
-					Thread.sleep(Math.round(timeToSleep / 1000000));
+					Thread.sleep(Math.round(timeToSleep / GameConstants.ONE_MILLISECOND));
 				} catch (InterruptedException e) {
 				}
 			}

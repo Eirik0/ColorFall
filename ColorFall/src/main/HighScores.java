@@ -2,11 +2,10 @@ package main;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import util.DrawingUtilities;
 import util.FileUtilities;
 
 public class HighScores {
@@ -27,7 +26,7 @@ public class HighScores {
 		return FileUtilities.loadFromFile(GameSettings.HIGH_SCORES_FILE_PATH, fileList -> new HighScores(fileList), () -> new HighScores());
 	}
 
-	public HighScores() {
+	private HighScores() {
 		highScores.add(new HighScore(EL_GRECO_1541));
 		highScores.add(new HighScore(HOLBEIN_1497));
 		highScores.add(new HighScore(RAPHAEL_1483));
@@ -40,7 +39,7 @@ public class HighScores {
 		highScores.add(new HighScore(DUCCIO_1260));
 	}
 
-	public HighScores(List<String> stringList) {
+	HighScores(List<String> stringList) {
 		for (String s : stringList) {
 			highScores.add(new HighScore(s));
 		}
@@ -84,13 +83,11 @@ public class HighScores {
 	}
 
 	public static class HighScore {
-		private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM d, ''yy h:mm:ss a");
-
 		public final String name;
 		public final int score;
 		public final int level;
 		public final int captures;
-		public final long dateTime;
+		public final long time;
 
 		public HighScore(String s) {
 			String[] split = s.split(",");
@@ -98,19 +95,19 @@ public class HighScores {
 			score = Integer.parseInt(split[1]);
 			level = Integer.parseInt(split[2]);
 			captures = Integer.parseInt(split[3]);
-			dateTime = Long.parseLong(split[4]);
+			time = Long.parseLong(split[4]);
 		}
 
-		public HighScore(String name, int score, int level, int captures, long dateTime) {
+		public HighScore(String name, int score, int level, int captures, long time) {
 			this.name = name;
 			this.score = score;
 			this.level = level;
 			this.captures = captures;
-			this.dateTime = dateTime;
+			this.time = time;
 		}
 
 		public String toFileString() {
-			return name + "," + score + "," + level + "," + captures + "," + dateTime;
+			return name + "," + score + "," + level + "," + captures + "," + time;
 		}
 
 		@Override
@@ -121,7 +118,7 @@ public class HighScores {
 			result = prime * result + score;
 			result = prime * result + level;
 			result = prime * result + captures;
-			result = prime * result + (int) (dateTime ^ (dateTime >>> 32));
+			result = prime * result + (int) (time ^ (time >>> 32));
 			return result;
 		}
 
@@ -129,14 +126,14 @@ public class HighScores {
 		public boolean equals(Object obj) {
 			if (obj instanceof HighScores) {
 				HighScore other = (HighScore) obj;
-				return name.equals(other.name) && score == other.score && level == other.level && captures == other.captures && dateTime == other.dateTime;
+				return name.equals(other.name) && score == other.score && level == other.level && captures == other.captures && time == other.time;
 			}
 			return false;
 		}
 
 		@Override
 		public String toString() {
-			return name + ", " + score + ", " + level + ", " + captures + ", " + DATE_FORMAT.format(new Date(dateTime));
+			return name + ", " + score + ", " + level + ", " + captures + ", " + DrawingUtilities.formatTime(time);
 		}
 	}
 }

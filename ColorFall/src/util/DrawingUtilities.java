@@ -41,6 +41,15 @@ public class DrawingUtilities {
 		g.drawString(text, round((GameSettings.componentWidth - width) / 2), round(y + height / 2));
 	}
 
+	public static String formatTime(long time) {
+		time /= 100;
+		long secondTenths = time % 10;
+		time /= 10;
+		long seconds = time % 60;
+		time /= 60;
+		return time + "m " + seconds + "." + secondTenths + "s";
+	}
+
 	public static int round(double d) {
 		return (int) Math.round(d);
 	}

@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class GameConstants {
-	public static final long ONE_SECOND = 1000000000; // nanoseconds
+	public static final long ONE_SECOND = 1000000000; // in nanoseconds
+	public static final long ONE_MILLISECOND = 1000000;
 
 	public static final Font GAME_FONT = loadFont();
 
