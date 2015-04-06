@@ -88,9 +88,19 @@ public class LevelBackground implements GameEntity {
 			int pointsToSkip = 0;
 			do {
 				pointsToSkip = random.nextInt(xs.length - 1) + 1;
-			} while (pointsToSkip != 1 && pointsToSkip % xs.length == 0);
+			} while (pointsToSkip != 1 && gcd(pointsToSkip, xs.length) != 1);
 
 			return pointsToSkip;
+		}
+
+		private static int gcd(int a, int b) {
+			int r = a % b;
+			while (r != 0) {
+				a = b;
+				b = r;
+				r = a % b;
+			}
+			return b;
 		}
 
 		@Override
