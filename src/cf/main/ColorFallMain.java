@@ -9,10 +9,10 @@ import cf.gamestate.menu.MenuState;
 import cf.gamestate.menu.OptionsMenuState;
 import cf.util.FileUtilities;
 
-public class ColorFall {
+public class ColorFallMain {
     private static final String TITLE = "Color Fall";
 
-    public static ColorFall instance;
+    public static ColorFallMain instance;
 
     private final GameDelegate gameDelegate;
 
@@ -24,7 +24,7 @@ public class ColorFall {
         mainFrame.setFocusable(false);
         mainFrame.setResizable(false);
 
-        instance = new ColorFall(mainFrame);
+        instance = new ColorFallMain(mainFrame);
 
         mainFrame.setVisible(true);
 
@@ -33,7 +33,7 @@ public class ColorFall {
         instance.gameDelegate.gamePanel.requestFocus();
     }
 
-    public ColorFall(JFrame mainFrame) {
+    public ColorFallMain(JFrame mainFrame) {
         loadSettings();
 
         gameDelegate = new GameDelegate();

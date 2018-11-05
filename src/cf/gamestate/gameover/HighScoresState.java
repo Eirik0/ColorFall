@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import cf.gamestate.GameState;
-import cf.main.ColorFall;
+import cf.main.ColorFallMain;
 import cf.main.GameDelegate;
 import cf.main.GameSettings;
 import cf.main.HighScores;
@@ -83,6 +83,6 @@ public class HighScoresState implements GameState {
 
     @Override
     public void keyPressed(int keyCode) {
-        gameDelegate.setState(ColorFall.instance.mainMenuState);
+        gameDelegate.setState(ColorFallMain.instance.mainMenuState);
     }
 }

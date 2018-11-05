@@ -3,7 +3,7 @@ package cf.gamestate.menu;
 import javax.swing.JFrame;
 
 import cf.gamestate.GameState;
-import cf.main.ColorFall;
+import cf.main.ColorFallMain;
 import cf.main.GameDelegate;
 import cf.main.GameSettings;
 
@@ -16,7 +16,7 @@ public class OptionsMenuState extends MenuState {
                     subMenu.getSelectedItem().itemAction.run();
                 }
             }
-            ColorFall.saveSettings();
+            ColorFallMain.saveSettings();
             gameDelegate.setSettings();
             mainFrame.pack();
             gameDelegate.setState(previousState);
