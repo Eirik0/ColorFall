@@ -1,9 +1,9 @@
-package gameentity;
+package cf.gameentity;
 
 import java.awt.Graphics;
 
 public interface GameEntity {
-	public void update(long dt);
+    void update(long dt);
 
-	public void drawOn(Graphics g);
+    void drawOn(Graphics g);
 }

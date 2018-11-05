@@ -1,11 +1,11 @@
-package gameentity.update;
+package cf.gameentity.update;
 
-import gameentity.FixedDurationEntity;
+import cf.gameentity.FixedDurationEntity;
 
 public abstract class GridUpdateEntity extends FixedDurationEntity {
-	public GridUpdateEntity(long duration) {
-		super(duration);
-	}
+    public GridUpdateEntity(long duration) {
+        super(duration);
+    }
 
-	public abstract int[][] getGrid();
+    public abstract int[][] getGrid();
 }

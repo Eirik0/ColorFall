@@ -1,90 +1,89 @@
-package gamestate.gameover;
-
-import game.score.GameScore;
-import gamestate.GameState;
+package cf.gamestate.gameover;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
-import main.GameDelegate;
-import main.GameSettings;
-import main.HighScores.HighScore;
-import util.GameConstants;
+import cf.game.score.GameScore;
+import cf.gamestate.GameState;
+import cf.main.GameDelegate;
+import cf.main.GameSettings;
+import cf.main.HighScores.HighScore;
+import cf.util.GameConstants;
 
 public class NameEntryState implements GameState {
-	private final GameDelegate gameDelegate;
-	private final GameScore score;
+    private final GameDelegate gameDelegate;
+    private final GameScore score;
 
-	private String name;
+    private String name;
 
-	public NameEntryState(GameDelegate gameDelegate, GameScore score) {
-		this.gameDelegate = gameDelegate;
-		this.score = score;
+    public NameEntryState(GameDelegate gameDelegate, GameScore score) {
+        this.gameDelegate = gameDelegate;
+        this.score = score;
 
-		name = "";
-	}
+        name = "";
+    }
 
-	@Override
-	public void init() {
-	}
+    @Override
+    public void init() {
+    }
 
-	@Override
-	public void update(long dt) {
-	}
+    @Override
+    public void update(long dt) {
+    }
 
-	@Override
-	public void drawOn(Graphics g) {
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, GameSettings.componentWidth, GameSettings.componentHeight);
+    @Override
+    public void drawOn(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, GameSettings.componentWidth, GameSettings.componentHeight);
 
-		g.setColor(Color.GREEN);
-		g.setFont(GameConstants.GAME_FONT);
-		g.drawString(score.toString(), 100, 100);
-		g.drawString("Name: " + name + "_", 200, 200);
-	}
+        g.setColor(Color.GREEN);
+        g.setFont(GameConstants.GAME_FONT);
+        g.drawString(score.toString(), 100, 100);
+        g.drawString("Name: " + name + "_", 200, 200);
+    }
 
-	@Override
-	public void keyPressed(int keyCode) {
-		switch (keyCode) {
-		case KeyEvent.VK_SPACE:
-			addSpace();
-			break;
-		case KeyEvent.VK_ENTER:
-			maybeCommitName();
-			break;
-		case KeyEvent.VK_BACK_SPACE:
-			doDelete();
-			break;
-		default:
-			maybeAddLetter(keyCode);
-		}
-	}
+    @Override
+    public void keyPressed(int keyCode) {
+        switch (keyCode) {
+        case KeyEvent.VK_SPACE:
+            addSpace();
+            break;
+        case KeyEvent.VK_ENTER:
+            maybeCommitName();
+            break;
+        case KeyEvent.VK_BACK_SPACE:
+            doDelete();
+            break;
+        default:
+            maybeAddLetter(keyCode);
+        }
+    }
 
-	private void maybeAddLetter(int keyCode) {
-		// From KeyEvent:
-		/** VK_A thru VK_Z are the same as ASCII 'A' thru 'Z' (0x41 - 0x5A) */
-		if (keyCode >= 0x41 && keyCode <= 0x5A) {
-			name = name + String.valueOf((char) keyCode);
-		}
-	}
+    private void maybeAddLetter(int keyCode) {
+        // From KeyEvent:
+        /** VK_A thru VK_Z are the same as ASCII 'A' thru 'Z' (0x41 - 0x5A) */
+        if (keyCode >= 0x41 && keyCode <= 0x5A) {
+            name = name + String.valueOf((char) keyCode);
+        }
+    }
 
-	private void addSpace() {
-		name = name + " ";
-	}
+    private void addSpace() {
+        name = name + " ";
+    }
 
-	private void maybeCommitName() {
-		if (!name.trim().isEmpty()) {
-			HighScore highScore = new HighScore(name, score.getScore(), score.getLevel(), score.getCaptures(), score.getTime());
-			gameDelegate.setState(new HighScoresState(gameDelegate, highScore));
-		}
-	}
+    private void maybeCommitName() {
+        if (!name.trim().isEmpty()) {
+            HighScore highScore = new HighScore(name, score.getScore(), score.getLevel(), score.getCaptures(), score.getTime());
+            gameDelegate.setState(new HighScoresState(gameDelegate, highScore));
+        }
+    }
 
-	private void doDelete() {
-		if (name.length() < 2) {
-			name = "";
-		} else {
-			name = name.substring(0, name.length() - 2);
-		}
-	}
+    private void doDelete() {
+        if (name.length() < 2) {
+            name = "";
+        } else {
+            name = name.substring(0, name.length() - 2);
+        }
+    }
 }

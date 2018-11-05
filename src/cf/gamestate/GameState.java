@@ -1,9 +1,9 @@
-package gamestate;
+package cf.gamestate;
 
-import gameentity.GameEntity;
+import cf.gameentity.GameEntity;
 
 public interface GameState extends GameEntity {
-	public void init();
+    void init();
 
-	public void keyPressed(int keyCode);
+    void keyPressed(int keyCode);
 }
