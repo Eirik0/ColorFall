@@ -1,88 +1,87 @@
 package cf.gamestate.gameover;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
-import cf.gamestate.GameState;
 import cf.main.ColorFall;
-import cf.main.GameDelegate;
-import cf.main.GameSettings;
-import cf.main.HighScores;
-import cf.main.HighScores.HighScore;
-import cf.util.DrawingUtilities;
-import cf.util.GameConstants;
+import gt.component.ComponentCreator;
+import gt.component.GameImage;
+import gt.gameloop.TimeConstants;
+import gt.gamestate.GameState;
+import gt.gamestate.GameStateManager;
+import gt.gamestate.UserInput;
 
 public class HighScoresState implements GameState {
-    private static final int SPACE_BETWEEN_SCORES = 50;
+    private static final int PIXELS_BETWEEN_SCORES = 50;
+    private static final int TOP_SCORE_HEIGHT = 125;
 
-    private double scoreOffset = -20;
+    private static final double NANOS_PER_PIXEL = 50 * TimeConstants.NANOS_PER_MILLISECOND;
 
-    private final GameDelegate gameDelegate;
+    private final HighScores highScores;
 
-    private HighScores highScores;
-    private final HighScore highScore;
+    private GameImage scrollingScoreImage = new GameImage();
 
-    private BufferedImage scrollImage;
-    private Graphics2D scrollGraphcis;
+    private double currentScoreOffset = -PIXELS_BETWEEN_SCORES / 2;
 
-    public HighScoresState(GameDelegate gameDelegate, HighScore highScore) {
-        this.gameDelegate = gameDelegate;
-        this.highScore = highScore;
+    private int width;
+    private int height;
+
+    public HighScoresState(HighScores highScores) {
+        this.highScores = highScores;
     }
 
     @Override
-    public void init() {
-        highScores = HighScores.loadFromFile();
-        if (highScore != null) {
-            highScores.addHighScore(highScore);
-            try {
-                highScores.saveToFile();
-            } catch (IOException e) {
-            }
-        }
-
-        scoreOffset = -20;
-
-        scrollImage = new BufferedImage(GameSettings.componentWidth, GameSettings.componentHeight - 125, BufferedImage.TYPE_INT_RGB);
-        scrollGraphcis = scrollImage.createGraphics();
+    public void update(double dt) {
+        currentScoreOffset += dt / NANOS_PER_PIXEL;
+        redrawScrollingScoreImage();
     }
 
-    @Override
-    public void update(long dt) {
-        scoreOffset += dt / 50000000.0;
-    }
+    private void redrawScrollingScoreImage() {
+        Graphics2D graphics = scrollingScoreImage.getGraphics();
 
-    @Override
-    public void drawOn(Graphics g) {
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, GameSettings.componentWidth, GameSettings.componentWidth);
-        g.setColor(Color.RED);
-        g.setFont(GameConstants.GAME_FONT.deriveFont(Font.PLAIN, 30));
-        HighScore topScore = highScores.get(0);
-        String topScoreLine1 = "1. " + topScore.name + "   Score: " + topScore.score;
-        String topScoreLine2 = "Level: " + topScore.level + "   Captures: " + topScore.captures + "   Time: " + DrawingUtilities.formatTime(topScore.time);
-        DrawingUtilities.drawCenteredString(g, topScoreLine1, SPACE_BETWEEN_SCORES);
-        DrawingUtilities.drawCenteredString(g, topScoreLine2, 2 * SPACE_BETWEEN_SCORES);
+        fillRect(graphics, 0, 0, width, height - TOP_SCORE_HEIGHT, ComponentCreator.backgroundColor());
 
-        scrollGraphcis.setColor(Color.BLACK);
-        scrollGraphcis.fillRect(0, 0, scrollImage.getWidth(), scrollImage.getHeight());
-
-        scrollGraphcis.setColor(Color.RED);
-        scrollGraphcis.setFont(GameConstants.GAME_FONT);
+        graphics.setColor(Color.RED);
+        graphics.setFont(ColorFall.GAME_FONT);
         for (int i = 1; i < highScores.size(); ++i) {
-            int y = scoreOffset < 0 ? SPACE_BETWEEN_SCORES * i : DrawingUtilities.round(SPACE_BETWEEN_SCORES * i - scoreOffset);
-            scrollGraphcis.drawString((i + 1) + ". " + highScores.get(i).toString(), 50, y);
+            double y = i * PIXELS_BETWEEN_SCORES;
+            if (currentScoreOffset > 0) { // this causes the scrolling to start with a delay
+                y -= currentScoreOffset;
+            }
+            graphics.drawString((i + 1) + ". " + highScores.get(i).toString(), 50, round(y));
         }
-
-        g.drawImage(scrollImage, 0, 125, null);
     }
 
     @Override
-    public void keyPressed(int keyCode) {
-        gameDelegate.setState(ColorFall.instance.mainMenuState);
+    public void drawOn(Graphics2D graphics) {
+        fillRect(graphics, 0, 0, width, TOP_SCORE_HEIGHT, ComponentCreator.backgroundColor());
+
+        HighScore topScore = highScores.get(0);
+
+        graphics.setColor(Color.RED);
+        graphics.setFont(ColorFall.GAME_FONT_LARGE);
+
+        String topScoreLine1 = "1. " + topScore.name + "   Score: " + topScore.score;
+        String topScoreLine2 = "Level: " + topScore.level + "   Captures: " + topScore.captures + "   Time: " + ColorFall.formatTime(topScore.time);
+
+        drawCenteredString(graphics, topScoreLine1, width / 2, PIXELS_BETWEEN_SCORES);
+        drawCenteredString(graphics, topScoreLine2, width / 2, PIXELS_BETWEEN_SCORES * 2);
+
+        graphics.drawImage(scrollingScoreImage.getImage(), 0, TOP_SCORE_HEIGHT, null);
+    }
+
+    @Override
+    public void setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+        scrollingScoreImage.setSize(width, height - TOP_SCORE_HEIGHT);
+        redrawScrollingScoreImage();
+    }
+
+    @Override
+    public void handleUserInput(UserInput input) {
+        if (UserInput.isKeyboardInput(input)) {
+            GameStateManager.setGameState(ColorFall.getInstance().mainMenuState);
+        }
     }
 }

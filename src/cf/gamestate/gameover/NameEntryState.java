@@ -1,89 +1,75 @@
 package cf.gamestate.gameover;
 
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.event.KeyEvent;
+import java.awt.Graphics2D;
+import java.io.IOException;
 
-import cf.game.score.GameScore;
-import cf.gamestate.GameState;
-import cf.main.GameDelegate;
-import cf.main.GameSettings;
-import cf.main.HighScores.HighScore;
-import cf.util.GameConstants;
+import cf.gameentity.score.GameScore;
+import cf.main.ColorFall;
+import gt.component.ComponentCreator;
+import gt.gamestate.GameState;
+import gt.gamestate.GameStateManager;
+import gt.gamestate.UserInput;
 
 public class NameEntryState implements GameState {
-    private final GameDelegate gameDelegate;
     private final GameScore score;
 
-    private String name;
+    private String name = "";
 
-    public NameEntryState(GameDelegate gameDelegate, GameScore score) {
-        this.gameDelegate = gameDelegate;
+    private int width;
+    private int height;
+
+    public NameEntryState(GameScore score) {
         this.score = score;
-
-        name = "";
     }
 
     @Override
-    public void init() {
+    public void update(double dt) {
     }
 
     @Override
-    public void update(long dt) {
+    public void drawOn(Graphics2D graphics) {
+        fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
+
+        graphics.setColor(Color.GREEN);
+        graphics.setFont(ColorFall.GAME_FONT_LARGE);
+        drawCenteredString(graphics, score.toString(), width / 2, 100);
+
+        drawCenteredString(graphics, "Enter Name:", width / 2, 200);
+
+        graphics.setFont(ColorFall.GAME_FONT);
+        drawCenteredString(graphics, name + "_", width / 2, 250);
     }
 
     @Override
-    public void drawOn(Graphics g) {
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, GameSettings.componentWidth, GameSettings.componentHeight);
-
-        g.setColor(Color.GREEN);
-        g.setFont(GameConstants.GAME_FONT);
-        g.drawString(score.toString(), 100, 100);
-        g.drawString("Name: " + name + "_", 200, 200);
+    public void setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
     @Override
-    public void keyPressed(int keyCode) {
-        switch (keyCode) {
-        case KeyEvent.VK_SPACE:
-            addSpace();
+    public void handleUserInput(UserInput input) {
+        switch (input) {
+        case BACK_SPACE_KEY_PRESSED:
+            name = name.substring(0, Math.max(0, name.length() - 2));
             break;
-        case KeyEvent.VK_ENTER:
-            maybeCommitName();
-            break;
-        case KeyEvent.VK_BACK_SPACE:
-            doDelete();
+        case ENTER_KEY_PRESSED:
+            if (name.trim().length() > 0) {
+                HighScores highScores = HighScores.loadFromFile();
+                highScores.addHighScore(new HighScore(name, score.getScore(), score.getLevel(), score.getCaptures(), round(score.getTime())));
+                try {
+                    highScores.saveToFile();
+                } catch (IOException e) {
+                }
+                GameStateManager.setGameState(new HighScoresState(highScores));
+            }
             break;
         default:
-            maybeAddLetter(keyCode);
-        }
-    }
-
-    private void maybeAddLetter(int keyCode) {
-        // From KeyEvent:
-        /** VK_A thru VK_Z are the same as ASCII 'A' thru 'Z' (0x41 - 0x5A) */
-        if (keyCode >= 0x41 && keyCode <= 0x5A) {
-            name = name + String.valueOf((char) keyCode);
-        }
-    }
-
-    private void addSpace() {
-        name = name + " ";
-    }
-
-    private void maybeCommitName() {
-        if (!name.trim().isEmpty()) {
-            HighScore highScore = new HighScore(name, score.getScore(), score.getLevel(), score.getCaptures(), score.getTime());
-            gameDelegate.setState(new HighScoresState(gameDelegate, highScore));
-        }
-    }
-
-    private void doDelete() {
-        if (name.length() < 2) {
-            name = "";
-        } else {
-            name = name.substring(0, name.length() - 2);
+            Character maybeCharacter = UserInput.toAscii(input);
+            if (maybeCharacter != null) {
+                name += maybeCharacter;
+            }
+            break;
         }
     }
 }

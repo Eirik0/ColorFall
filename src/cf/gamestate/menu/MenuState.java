@@ -1,72 +1,74 @@
 package cf.gamestate.menu;
 
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.event.KeyEvent;
+import java.awt.Graphics2D;
 
-import cf.gameentity.background.CosineBackground;
-import cf.gamestate.GameState;
-import cf.util.GameConstants;
+import cf.main.ColorFall;
+import gt.gamestate.GameState;
+import gt.gamestate.UserInput;
 
 public class MenuState implements GameState {
-    protected final MenuItemList menuItems;
+    private static final int PIXELS_BETWEEN_ITEMS = 100;
+    private static final int PIXELS_TO_SUBMENU = 30;
 
-    private final CosineBackground background = new CosineBackground();
+    private final MenuItemList menuItems = new MenuItemList();
 
     public MenuState() {
-        menuItems = new MenuItemList();
     }
 
-    public void addMenuItem(MenuItem menuItem) {
+    public MenuState addMenuItem(MenuItem menuItem) {
         menuItems.add(menuItem);
+        return this;
     }
 
     @Override
-    public void init() {
+    public void update(double dt) {
+        ColorFall.getInstance().menuBackground.update(dt);
     }
 
     @Override
-    public void update(long dt) {
-        background.update(dt);
-    }
+    public void drawOn(Graphics2D graphics) {
+        ColorFall.getInstance().menuBackground.drawOn(graphics);
 
-    @Override
-    public void drawOn(Graphics g) {
-        background.drawOn(g);
+        graphics.setFont(ColorFall.GAME_FONT);
 
-        g.setFont(GameConstants.GAME_FONT);
-
-        int distance = 100;
         for (int i = 0; i < menuItems.size(); ++i) {
             if (i == menuItems.getSelectionIndex()) {
-                g.setColor(Color.GREEN);
+                graphics.setColor(Color.GREEN);
             } else {
-                g.setColor(Color.RED);
+                graphics.setColor(Color.RED);
             }
             MenuItem item = menuItems.getItem(i);
-            g.drawString(item.itemName, (i + 1) * distance, (i + 1) * distance);
+            int cordinate = (i + 1) * PIXELS_BETWEEN_ITEMS;
+            graphics.drawString(item.itemName, cordinate, cordinate);
             if (item.subMenu.size() > 0) {
-                g.drawString(item.subMenu.getSelectedItem().itemName, (i + 1) * distance + 30, (i + 1) * distance + 30);
+                int subMenuCoordiante = cordinate + PIXELS_TO_SUBMENU;
+                graphics.drawString(item.subMenu.getSelectedItem().itemName, subMenuCoordiante, subMenuCoordiante);
             }
         }
     }
 
     @Override
-    public void keyPressed(int keyCode) {
-        switch (keyCode) {
-        case KeyEvent.VK_UP:
+    public void setSize(int width, int height) {
+        ColorFall.getInstance().menuBackground.setSize(width, height);
+    }
+
+    @Override
+    public void handleUserInput(UserInput input) {
+        switch (input) {
+        case UP_KEY_PRESSED:
             menuItems.selectPrevious();
             break;
-        case KeyEvent.VK_DOWN:
+        case DOWN_KEY_PRESSED:
             menuItems.selectNext();
             break;
-        case KeyEvent.VK_LEFT:
+        case LEFT_KEY_PRESSED:
             menuItems.getSelectedItem().subMenu.selectPrevious();
             break;
-        case KeyEvent.VK_RIGHT:
+        case RIGHT_KEY_PRESSED:
             menuItems.getSelectedItem().subMenu.selectNext();
             break;
-        case KeyEvent.VK_ENTER:
+        case ENTER_KEY_PRESSED:
             menuItems.getSelectedItem().itemAction.run();
             break;
         }
