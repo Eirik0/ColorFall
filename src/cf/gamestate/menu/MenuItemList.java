@@ -48,5 +48,4 @@ public class MenuItemList {
     public MenuItem getSelectedItem() {
         return menuItems.get(selectionIndex);
     }
-
 }

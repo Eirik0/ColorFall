@@ -1,10 +1,10 @@
 package cf.gamestate.menu;
 
-import cf.gamestate.GameState;
-import cf.main.GameDelegate;
+import gt.gamestate.GameState;
+import gt.gamestate.GameStateManager;
 
 public class PauseMenuState extends MenuState {
-    public PauseMenuState(GameDelegate gameDelegate, GameState previousState) {
-        addMenuItem(new MenuItem("Return", () -> gameDelegate.setState(previousState)));
+    public PauseMenuState(GameState previousState) {
+        addMenuItem(new MenuItem("Return", () -> GameStateManager.setGameState(previousState)));
     }
 }

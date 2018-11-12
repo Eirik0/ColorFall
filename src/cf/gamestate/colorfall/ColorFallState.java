@@ -1,122 +1,135 @@
 package cf.gamestate.colorfall;
 
-import java.awt.Graphics;
-import java.awt.event.KeyEvent;
+import java.awt.Graphics2D;
 import java.util.List;
 
-import cf.game.FallingColumn;
-import cf.game.GameGrid;
-import cf.game.score.GameScore;
-import cf.gameentity.background.LevelBackground;
-import cf.gameentity.update.GridUpdateEntity;
-import cf.gamestate.GameState;
+import cf.gameentity.score.GameScore;
+import cf.gameentity.update.CapturedCell;
 import cf.gamestate.gameover.NameEntryState;
 import cf.gamestate.menu.PauseMenuState;
-import cf.main.GameDelegate;
-import cf.main.GameSettings;
-import cf.util.DrawingUtilities;
+import cf.main.ColorFall;
+import gt.component.ComponentCreator;
+import gt.gameentity.GridSizer;
+import gt.gamestate.GameState;
+import gt.gamestate.GameStateManager;
+import gt.gamestate.UserInput;
 
 public class ColorFallState implements GameState {
-    private final GameDelegate gameDelegate;
+    final GameGrid gameGrid;
 
-    final LevelBackground levelBackground;
-
-    private final GameGrid gameGrid;
     final GameScore score;
 
     private FallingColumn fallingColumn;
 
-    private boolean keyDownPressed = false;
+    private BouncingPolygon bouncingPolygon;
 
-    public ColorFallState(GameDelegate gameDelegate) {
-        this.gameDelegate = gameDelegate;
+    int width;
+    int height;
+
+    GridSizer sizer;
+
+    public ColorFallState() {
+        int level = 1;
+
+        bouncingPolygon = new BouncingPolygon(this, level);
 
         gameGrid = new GameGrid();
-        score = new GameScore(0, 1, 0);
+        score = new GameScore(0, level, 0);
 
-        fallingColumn = FallingColumn.newRandom(gameGrid, 1);
+        nextFallingColumn();
+    }
 
-        levelBackground = new LevelBackground(1);
+    public void nextFallingColumn() {
+        fallingColumn = FallingColumn.newRandom(score.getLevel());
+        if (gameGrid.get(fallingColumn.getX(), fallingColumn.getY()) != GameGrid.UNPLAYED) {
+            GameStateManager.setGameState(new NameEntryState(score));
+        }
     }
 
     @Override
-    public void init() {
-        GameSizer.resizeTo(GameSettings.componentWidth, GameSettings.componentHeight);
+    public void update(double dt) {
+        update(dt, true);
     }
 
-    @Override
-    public void update(long dt) {
-        if (keyDownPressed) {
-            placeColumn(true);
-            keyDownPressed = false;
-        } else {
+    public void update(double dt, boolean updateFallingColumn) {
+        score.update(dt);
+        if (score.getLevel() > bouncingPolygon.numSides) {
+            bouncingPolygon = bouncingPolygon.nextLevelPolygon();
+        }
+        bouncingPolygon.update(dt);
+        if (updateFallingColumn) {
             fallingColumn.update(dt);
-            if (fallingColumn.wasPlaced()) {
-                placeColumn(false);
+            if (fallingColumn.isTickTimeUp()) {
+                if (!fallingColumn.maybeMove(gameGrid, 0, 1)) {
+                    placeFallingColumn();
+                } else {
+                    fallingColumn.resetTickTimer();
+                }
             }
         }
-        levelBackground.update(dt);
-        score.update(dt);
     }
 
-    @Override
-    public void drawOn(Graphics g) {
-        levelBackground.drawOn(g);
-        DrawingUtilities.drawGrid(g, gameGrid.getGrid());
-        score.drawOn(g);
-        fallingColumn.drawOn(g);
-    }
-
-    @Override
-    public void keyPressed(int keyCode) {
-        switch (keyCode) {
-        case KeyEvent.VK_UP:
-            doKeyUp();
-            break;
-        case KeyEvent.VK_DOWN:
-            doKeyDown();
-            break;
-        case KeyEvent.VK_LEFT:
-            doKeyLeft();
-            break;
-        case KeyEvent.VK_RIGHT:
-            doKeyRight();
-            break;
-        case KeyEvent.VK_ESCAPE:
-            pause();
-            break;
+    private void placeFallingColumn() {
+        List<CapturedCell> capturedCells = gameGrid.placeColumn(fallingColumn);
+        if (capturedCells.size() > 0) {
+            GameStateManager.setGameState(new GameUpdateState(this, capturedCells));
+        } else {
+            nextFallingColumn();
         }
     }
 
-    private void doKeyUp() {
-        fallingColumn.rotate();
+    @Override
+    public void drawOn(Graphics2D graphics) {
+        drawOn(graphics, true);
     }
 
-    private void doKeyDown() {
-        keyDownPressed = true;
+    public void drawOn(Graphics2D graphics, boolean drawFallingColumn) {
+        fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
+        drawRect(graphics, sizer.offsetX, sizer.offsetY, sizer.gridWidth, sizer.gridHeight, ComponentCreator.foregroundColor());
+        bouncingPolygon.drawOn(graphics);
+        score.drawOn(graphics);
+        for (int x = 0; x < GameGrid.WIDTH; ++x) {
+            for (int y = 0; y < GameGrid.HEIGHT; ++y) {
+                int color = gameGrid.get(x, y);
+                if (color != GameGrid.UNPLAYED) {
+                    ColorFall.drawCell(graphics, sizer.getCenterX(x), sizer.getCenterY(y), sizer.cellSize / 2, color);
+                }
+            }
+        }
+        if (drawFallingColumn) {
+            int fCX = fallingColumn.getX();
+            int fCY = fallingColumn.getY();
+            ColorFall.drawCell(graphics, sizer.getCenterX(fCX), sizer.getCenterY(fCY), sizer.cellSize / 2, fallingColumn.getColor1());
+            ColorFall.drawCell(graphics, sizer.getCenterX(fCX), sizer.getCenterY(fCY - 1), sizer.cellSize / 2, fallingColumn.getColor2());
+            ColorFall.drawCell(graphics, sizer.getCenterX(fCX), sizer.getCenterY(fCY - 2), sizer.cellSize / 2, fallingColumn.getColor3());
+        }
     }
 
-    private void doKeyLeft() {
-        fallingColumn.maybeMoveLeft();
+    @Override
+    public void setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+        sizer = new GridSizer(width, height, GameGrid.WIDTH, GameGrid.HEIGHT);
     }
 
-    private void doKeyRight() {
-        fallingColumn.maybeMoveRight();
-    }
-
-    private void pause() {
-        gameDelegate.setState(new PauseMenuState(gameDelegate, this));
-    }
-
-    private void placeColumn(boolean drop) {
-        List<GridUpdateEntity> updates = gameGrid.placeColumn(fallingColumn, score, drop);
-
-        fallingColumn = FallingColumn.newRandom(gameGrid, score.getLevel());
-
-        if (updates.size() > 0) {
-            gameDelegate.setState(new GameUpdateState(gameDelegate, this, updates));
-        } else if (gameGrid.get(fallingColumn.getX(), fallingColumn.getY()) != GameGrid.UNPLAYED) {
-            gameDelegate.setState(new NameEntryState(gameDelegate, score));
+    @Override
+    public void handleUserInput(UserInput input) {
+        switch (input) {
+        case UP_KEY_PRESSED:
+            fallingColumn.rotate();
+            break;
+        case DOWN_KEY_PRESSED:
+            placeFallingColumn();
+            break;
+        case LEFT_KEY_PRESSED:
+            fallingColumn.maybeMove(gameGrid, -1, 0);
+            break;
+        case RIGHT_KEY_PRESSED:
+            fallingColumn.maybeMove(gameGrid, 1, 0);
+            break;
+        case ESC_KEY_PRESSED:
+            GameStateManager.setGameState(new PauseMenuState(this));
+            break;
         }
     }
 }

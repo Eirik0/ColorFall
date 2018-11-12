@@ -1,60 +1,43 @@
 package cf.main;
 
-import javax.swing.JFrame;
+import java.awt.Dimension;
 
 import cf.gamestate.colorfall.ColorFallState;
+import cf.gamestate.gameover.HighScores;
 import cf.gamestate.gameover.HighScoresState;
 import cf.gamestate.menu.MenuItem;
 import cf.gamestate.menu.MenuState;
-import cf.gamestate.menu.OptionsMenuState;
-import cf.util.FileUtilities;
+import gt.component.ComponentCreator;
+import gt.component.GamePanel;
+import gt.component.MainFrame;
+import gt.gamestate.GameStateManager;
 
 public class ColorFallMain {
     private static final String TITLE = "Color Fall";
 
-    public static ColorFallMain instance;
-
-    private final GameDelegate gameDelegate;
-
-    public final MenuState mainMenuState;
-
     public static void main(String[] args) {
-        JFrame mainFrame = new JFrame(TITLE);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setFocusable(false);
-        mainFrame.setResizable(false);
+        ComponentCreator.setCrossPlatformLookAndFeel();
 
-        instance = new ColorFallMain(mainFrame);
+        GamePanel mainPanel = new GamePanel("ColorFall");
+        mainPanel.setPreferredSize(new Dimension(ComponentCreator.DEFAULT_WIDTH, ComponentCreator.DEFAULT_HEIGHT));
 
-        mainFrame.setVisible(true);
+        GameStateManager.setMainPanel(mainPanel);
 
-        new Thread(instance.gameDelegate).start();
+        MenuState mainMenuState = new MenuState()
+                .addMenuItem(new MenuItem("Start", () -> GameStateManager.setGameState(new ColorFallState())))
+                .addMenuItem(new MenuItem("High Scores", () -> GameStateManager.setGameState(new HighScoresState(HighScores.loadFromFile()))))
+                .addMenuItem(new MenuItem("Options", () -> GameStateManager.setGameState(ColorFall.getInstance().optionsMenuState)))
+                .addMenuItem(new MenuItem("Exit", () -> System.exit(0)));
 
-        instance.gameDelegate.gamePanel.requestFocus();
-    }
+        MenuState optionsMenuState = new MenuState()
+                .addMenuItem(new MenuItem("Save and Return", () -> GameStateManager.setGameState(ColorFall.getInstance().mainMenuState)));
 
-    public ColorFallMain(JFrame mainFrame) {
-        loadSettings();
+        ColorFall.initialize(mainMenuState, optionsMenuState);
 
-        gameDelegate = new GameDelegate();
+        GameStateManager.setGameState(mainMenuState);
 
-        mainMenuState = new MenuState();
-        mainMenuState.addMenuItem(new MenuItem("Start", () -> gameDelegate.setState(new ColorFallState(gameDelegate))));
-        mainMenuState.addMenuItem(new MenuItem("High Scores", () -> gameDelegate.setState(new HighScoresState(gameDelegate, null))));
-        mainMenuState.addMenuItem(new MenuItem("Options", () -> gameDelegate.setState(new OptionsMenuState(gameDelegate, mainMenuState, mainFrame))));
-        mainMenuState.addMenuItem(new MenuItem("Exit", () -> System.exit(0)));
+        MainFrame mainFrame = new MainFrame(TITLE, mainPanel);
 
-        gameDelegate.setState(mainMenuState);
-
-        mainFrame.setContentPane(gameDelegate.gamePanel);
-        mainFrame.pack();
-    }
-
-    private static void loadSettings() {
-        FileUtilities.initFromFile(GameSettings.SETTINGS_FILE_PATH, fileList -> GameSettings.init(fileList), () -> GameSettings.init());
-    }
-
-    public static void saveSettings() {
-
+        mainFrame.show();
     }
 }
