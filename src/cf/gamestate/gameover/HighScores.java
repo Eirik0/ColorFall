@@ -17,7 +17,7 @@ public class HighScores {
     public static final String LEONARDO_1452 = "Leonardo da Vinci,1452,0,0,0";
     public static final String GHIRLANDAIO_1449 = "Domenico Ghirlandaio,1449,0,0,0";
     public static final String EYCK_1395 = "Jan van Eyck,1395,0,0,0";
-    public static final String DONATELLO_1386 = "Donato di Niccolò di Betto Bardi,1386,0,0,0";
+    public static final String DONATELLO_1386 = "Donato di Niccolo di Betto Bardi,1386,0,0,0";
     public static final String DUCCIO_1260 = "Duccio di Buoninsegna,1260,0,0,0";
 
     private final List<HighScore> highScores = new ArrayList<>();
