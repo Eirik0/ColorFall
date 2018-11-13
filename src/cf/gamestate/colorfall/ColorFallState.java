@@ -80,14 +80,16 @@ public class ColorFallState implements GameState {
 
     @Override
     public void drawOn(Graphics2D graphics) {
-        drawOn(graphics, true);
+        drawOn(graphics, true, true);
     }
 
-    public void drawOn(Graphics2D graphics, boolean drawFallingColumn) {
+    public void drawOn(Graphics2D graphics, boolean drawScore, boolean drawFallingColumn) {
         fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
         bouncingPolygon.drawOn(graphics);
         drawRect(graphics, sizer.offsetX, sizer.offsetY, sizer.gridWidth, sizer.gridHeight, ComponentCreator.foregroundColor());
-        score.drawOn(graphics);
+        if (drawScore) {
+            score.drawOn(graphics);
+        }
         for (int x = 0; x < GameGrid.WIDTH; ++x) {
             for (int y = 0; y < GameGrid.HEIGHT; ++y) {
                 int color = gameGrid.get(x, y);
@@ -128,7 +130,7 @@ public class ColorFallState implements GameState {
             fallingColumn.maybeMove(gameGrid, 1, 0);
             break;
         case ESC_KEY_PRESSED:
-            GameStateManager.setGameState(new PauseMenuState(this));
+            GameStateManager.setGameState(new PauseMenuState(this, score, bouncingPolygon));
             break;
         }
     }

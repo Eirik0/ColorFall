@@ -59,7 +59,7 @@ public class GameUpdateState implements GameState {
 
     @Override
     public void drawOn(Graphics2D graphics) {
-        colorFallState.drawOn(graphics, false);
+        colorFallState.drawOn(graphics, true, false);
         for (CapturedCell capturedCell : currentCaptures) {
             double x = colorFallState.sizer.getCenterX(capturedCell.x);
             double y = colorFallState.sizer.getCenterY(capturedCell.y);

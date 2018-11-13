@@ -12,9 +12,6 @@ import gt.gameentity.Sizable;
 public class CosineBackground implements GameEntity, Sizable {
     private static final double D_THETA = Math.PI / 1440;
 
-    private int width;
-    private int height;
-
     private final Color color1;
     private final Color color2;
 
@@ -35,8 +32,6 @@ public class CosineBackground implements GameEntity, Sizable {
 
     @Override
     public void drawOn(Graphics2D graphics) {
-        fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
-
         double theta = 0;
         int i = 0;
 
@@ -61,8 +56,6 @@ public class CosineBackground implements GameEntity, Sizable {
 
     @Override
     public void setSize(int width, int height) {
-        this.width = width;
-        this.height = height;
         sizer = new GridSizer(width, height, 1, 1);
     }
 }

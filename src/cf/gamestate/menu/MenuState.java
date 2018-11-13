@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cf.main.ColorFall;
+import gt.component.ComponentCreator;
 import gt.gamestate.GameState;
 import gt.gamestate.UserInput;
 
@@ -12,6 +13,9 @@ public class MenuState implements GameState {
     private static final int PIXELS_TO_SUBMENU = 30;
 
     private final MenuItemList menuItems = new MenuItemList();
+
+    int width;
+    int height;
 
     public MenuState() {
     }
@@ -28,6 +32,13 @@ public class MenuState implements GameState {
 
     @Override
     public void drawOn(Graphics2D graphics) {
+        drawOn(graphics, true);
+    }
+
+    public void drawOn(Graphics2D graphics, boolean fillBackground) {
+        if (fillBackground) {
+            fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
+        }
         ColorFall.getInstance().menuBackground.drawOn(graphics);
 
         graphics.setFont(ColorFall.GAME_FONT);
@@ -50,6 +61,8 @@ public class MenuState implements GameState {
 
     @Override
     public void setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
         ColorFall.getInstance().menuBackground.setSize(width, height);
     }
 
