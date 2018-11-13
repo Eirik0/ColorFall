@@ -42,7 +42,7 @@ public class ColorFallState implements GameState {
     public void nextFallingColumn() {
         fallingColumn = FallingColumn.newRandom(score.getLevel());
         if (gameGrid.get(fallingColumn.getX(), fallingColumn.getY()) != GameGrid.UNPLAYED) {
-            GameStateManager.setGameState(new NameEntryState(score));
+            GameStateManager.setGameState(new NameEntryState(score, bouncingPolygon));
         }
     }
 
@@ -85,8 +85,8 @@ public class ColorFallState implements GameState {
 
     public void drawOn(Graphics2D graphics, boolean drawFallingColumn) {
         fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
-        drawRect(graphics, sizer.offsetX, sizer.offsetY, sizer.gridWidth, sizer.gridHeight, ComponentCreator.foregroundColor());
         bouncingPolygon.drawOn(graphics);
+        drawRect(graphics, sizer.offsetX, sizer.offsetY, sizer.gridWidth, sizer.gridHeight, ComponentCreator.foregroundColor());
         score.drawOn(graphics);
         for (int x = 0; x < GameGrid.WIDTH; ++x) {
             for (int y = 0; y < GameGrid.HEIGHT; ++y) {

@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.io.IOException;
 
 import cf.gameentity.score.GameScore;
+import cf.gamestate.colorfall.BouncingPolygon;
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
 import gt.gamestate.GameState;
@@ -13,23 +14,27 @@ import gt.gamestate.UserInput;
 
 public class NameEntryState implements GameState {
     private final GameScore score;
+    private final BouncingPolygon bouncingPolygon;
 
     private String name = "";
 
     private int width;
     private int height;
 
-    public NameEntryState(GameScore score) {
+    public NameEntryState(GameScore score, BouncingPolygon bouncingPolygon) {
         this.score = score;
+        this.bouncingPolygon = bouncingPolygon;
     }
 
     @Override
     public void update(double dt) {
+        bouncingPolygon.update(dt);
     }
 
     @Override
     public void drawOn(Graphics2D graphics) {
         fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
+        bouncingPolygon.drawOn(graphics);
 
         graphics.setColor(Color.GREEN);
         graphics.setFont(ColorFall.GAME_FONT_LARGE);
