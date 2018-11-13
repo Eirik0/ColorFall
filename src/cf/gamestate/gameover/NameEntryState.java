@@ -38,12 +38,13 @@ public class NameEntryState implements GameState {
 
         graphics.setColor(Color.GREEN);
         graphics.setFont(ColorFall.GAME_FONT_LARGE);
-        drawCenteredString(graphics, score.toString(), width / 2, 100);
-
-        drawCenteredString(graphics, "Enter Name:", width / 2, 200);
+        drawCenteredXString(graphics, score.toString(), width / 2, 100);
 
         graphics.setFont(ColorFall.GAME_FONT);
-        drawCenteredString(graphics, name + "_", width / 2, 250);
+        drawCenteredXString(graphics, "Enter Name:", width / 2, 200);
+
+        graphics.setFont(ColorFall.GAME_FONT_LARGE);
+        drawCenteredXString(graphics, name + "_", width / 2, 275);
     }
 
     @Override
@@ -56,7 +57,7 @@ public class NameEntryState implements GameState {
     public void handleUserInput(UserInput input) {
         switch (input) {
         case BACK_SPACE_KEY_PRESSED:
-            name = name.substring(0, Math.max(0, name.length() - 2));
+            name = name.substring(0, Math.max(0, name.length() - 1));
             break;
         case ENTER_KEY_PRESSED:
             if (name.trim().length() > 0) {
