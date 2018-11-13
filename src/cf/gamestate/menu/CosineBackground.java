@@ -6,10 +6,11 @@ import java.util.Random;
 
 import gt.component.ComponentCreator;
 import gt.gameentity.GameEntity;
+import gt.gameentity.GridSizer;
 import gt.gameentity.Sizable;
 
 public class CosineBackground implements GameEntity, Sizable {
-    private static final double dTheta = Math.PI / 1440;
+    private static final double D_THETA = Math.PI / 1440;
 
     private int width;
     private int height;
@@ -17,7 +18,9 @@ public class CosineBackground implements GameEntity, Sizable {
     private final Color color1;
     private final Color color2;
 
-    private static double n = 0;
+    private double n = 0;
+
+    private GridSizer sizer = new GridSizer(ComponentCreator.DEFAULT_WIDTH, ComponentCreator.DEFAULT_HEIGHT, 1, 1);
 
     public CosineBackground() {
         Random random = new Random();
@@ -34,9 +37,6 @@ public class CosineBackground implements GameEntity, Sizable {
     public void drawOn(Graphics2D graphics) {
         fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
 
-        double halfWidth = width / 2.0;
-        double halfHeight = height / 2.0;
-
         double theta = 0;
         int i = 0;
 
@@ -47,14 +47,14 @@ public class CosineBackground implements GameEntity, Sizable {
                 graphics.setColor(color2);
             }
 
-            double r = halfHeight * Math.sin(n * theta);
+            double r = sizer.cellSize / 2 * Math.sin(n * theta);
 
-            int x = round(r * Math.cos(theta) + halfWidth);
-            int y = round(halfHeight - r * Math.sin(theta));
+            int x = round(r * Math.cos(theta) + sizer.getCenterX(0));
+            int y = round(sizer.getCenterY(0) - r * Math.sin(theta));
 
             graphics.drawLine(x, y, x, y);
 
-            theta += dTheta;
+            theta += D_THETA;
             ++i;
         }
     }
@@ -63,5 +63,6 @@ public class CosineBackground implements GameEntity, Sizable {
     public void setSize(int width, int height) {
         this.width = width;
         this.height = height;
+        sizer = new GridSizer(width, height, 1, 1);
     }
 }
