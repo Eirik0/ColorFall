@@ -81,7 +81,7 @@ public class HighScoresState implements GameState {
     @Override
     public void handleUserInput(UserInput input) {
         if (UserInput.isKeyboardInput(input)) {
-            GameStateManager.setGameState(ColorFall.getInstance().mainMenuState);
+            GameStateManager.setGameState(ColorFall.getMainMenuState());
         }
     }
 }

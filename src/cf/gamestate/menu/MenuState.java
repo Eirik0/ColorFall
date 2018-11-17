@@ -27,7 +27,7 @@ public class MenuState implements GameState {
 
     @Override
     public void update(double dt) {
-        ColorFall.getInstance().menuBackground.update(dt);
+        ColorFall.getMenuBackground().update(dt);
     }
 
     @Override
@@ -39,11 +39,10 @@ public class MenuState implements GameState {
         if (fillBackground) {
             fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
         }
-        ColorFall.getInstance().menuBackground.drawOn(graphics);
-
-        graphics.setFont(ColorFall.GAME_FONT);
+        ColorFall.getMenuBackground().drawOn(graphics);
 
         for (int i = 0; i < menuItems.size(); ++i) {
+            graphics.setFont(ColorFall.GAME_FONT_LARGE);
             if (i == menuItems.getSelectionIndex()) {
                 graphics.setColor(Color.GREEN);
             } else {
@@ -53,6 +52,7 @@ public class MenuState implements GameState {
             int cordinate = (i + 1) * PIXELS_BETWEEN_ITEMS;
             graphics.drawString(item.itemName, cordinate, cordinate);
             if (item.subMenu.size() > 0) {
+                graphics.setFont(ColorFall.GAME_FONT_SMALL);
                 int subMenuCoordiante = cordinate + PIXELS_TO_SUBMENU;
                 graphics.drawString(item.subMenu.getSelectedItem().itemName, subMenuCoordiante, subMenuCoordiante);
             }
@@ -63,7 +63,7 @@ public class MenuState implements GameState {
     public void setSize(int width, int height) {
         this.width = width;
         this.height = height;
-        ColorFall.getInstance().menuBackground.setSize(width, height);
+        ColorFall.getMenuBackground().setSize(width, height);
     }
 
     @Override
@@ -82,6 +82,10 @@ public class MenuState implements GameState {
             menuItems.getSelectedItem().subMenu.selectNext();
             break;
         case ENTER_KEY_PRESSED:
+            MenuItemList subMenu = menuItems.getSelectedItem().subMenu;
+            if (subMenu.size() > 0) {
+                subMenu.getSelectedItem().itemAction.run();
+            }
             menuItems.getSelectedItem().itemAction.run();
             break;
         }

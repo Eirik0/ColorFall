@@ -28,9 +28,7 @@ public class ColorFallState implements GameState {
 
     GridSizer sizer;
 
-    public ColorFallState() {
-        int level = 1;
-
+    public ColorFallState(int level) {
         bouncingPolygon = new BouncingPolygon(this, level);
 
         gameGrid = new GameGrid();

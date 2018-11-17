@@ -6,8 +6,8 @@ import java.awt.Graphics2D;
 import java.io.File;
 
 import cf.gamestate.menu.CosineBackground;
+import cf.gamestate.menu.MenuState;
 import gt.gameentity.DrawingMethods;
-import gt.gamestate.GameState;
 import gt.io.FileUtilities;
 
 public class ColorFall {
@@ -22,6 +22,7 @@ public class ColorFall {
     public static final String HIGH_SCORES_FILE_PATH = BASE_FILE_PATH + ColorFall.HIGH_SCORE_FILE_NAME;
 
     public static final Font GAME_FONT = FileUtilities.loadFont("/cf/font/LCD_Solid.ttf", Font.TRUETYPE_FONT).deriveFont(Font.PLAIN, 24);
+    public static final Font GAME_FONT_SMALL = GAME_FONT.deriveFont(Font.PLAIN, 18);
     public static final Font GAME_FONT_LARGE = GAME_FONT.deriveFont(Font.PLAIN, 30);
 
     public static final int CAPTURES_PER_LEVEL = 50;
@@ -30,22 +31,40 @@ public class ColorFall {
 
     private static ColorFall instance;
 
-    public final GameState mainMenuState;
-    public final GameState optionsMenuState;
-    public final CosineBackground menuBackground;
+    private final MenuState mainMenuState;
+    private final MenuState optionsMenuState;
+    private final CosineBackground menuBackground;
 
-    private ColorFall(GameState mainMenuState, GameState optionsMenuState) {
+    private int startingLevel = 1;
+
+    private ColorFall(MenuState mainMenuState, MenuState optionsMenuState) {
         this.mainMenuState = mainMenuState;
         this.optionsMenuState = optionsMenuState;
         menuBackground = new CosineBackground();
     }
 
-    public static void initialize(GameState mainMenuState, GameState optionsMenuState) {
+    public static void initialize(MenuState mainMenuState, MenuState optionsMenuState) {
         instance = new ColorFall(mainMenuState, optionsMenuState);
     }
 
-    public static ColorFall getInstance() {
-        return instance;
+    public static MenuState getMainMenuState() {
+        return instance.mainMenuState;
+    }
+
+    public static MenuState getOptionsMenuState() {
+        return instance.optionsMenuState;
+    }
+
+    public static CosineBackground getMenuBackground() {
+        return instance.menuBackground;
+    }
+
+    public static int getStartingLevel() {
+        return instance.startingLevel;
+    }
+
+    public static void setStartingLevel(int level) {
+        instance.startingLevel = level;
     }
 
     public static String formatTime(double timeDouble) {

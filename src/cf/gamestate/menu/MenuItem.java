@@ -16,7 +16,8 @@ public class MenuItem {
         subMenu = new MenuItemList();
     }
 
-    public void addSubMenuItem(MenuItem menuItem) {
+    public MenuItem addSubMenuItem(MenuItem menuItem) {
         subMenu.add(menuItem);
+        return this;
     }
 }

@@ -15,6 +15,7 @@ public class GameScore implements GameEntity {
     private static final int TIME_Y = 400;
 
     private int score;
+    private int startingLevel;
     private int level;
     private int captures;
     private double time;
@@ -24,6 +25,7 @@ public class GameScore implements GameEntity {
 
     public GameScore(int score, int level, int captures) {
         this.score = score;
+        startingLevel = level;
         this.level = level;
         this.captures = captures;
         time = 0;
@@ -72,7 +74,7 @@ public class GameScore implements GameEntity {
         scoreAdder.add(scorePerCapture, numCaptures);
         capturesAdder.add(1, numCaptures);
 
-        if (captures > level * ColorFall.CAPTURES_PER_LEVEL) {
+        if (captures >= (level + 1 - startingLevel) * ColorFall.CAPTURES_PER_LEVEL) {
             ++level;
         }
     }

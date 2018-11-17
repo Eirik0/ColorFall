@@ -23,14 +23,20 @@ public class ColorFallMain {
 
         GameStateManager.setMainPanel(mainPanel);
 
+        MenuItem startGameMenuItem = new MenuItem("Start", () -> GameStateManager.setGameState(new ColorFallState(ColorFall.getStartingLevel())));
+        for (int i = 1; i < 100; ++i) {
+            int level = i;
+            startGameMenuItem.addSubMenuItem(new MenuItem("* Level: " + level, () -> ColorFall.setStartingLevel(level)));
+        }
+
         MenuState mainMenuState = new MenuState()
-                .addMenuItem(new MenuItem("Start", () -> GameStateManager.setGameState(new ColorFallState())))
+                .addMenuItem(startGameMenuItem)
                 .addMenuItem(new MenuItem("High Scores", () -> GameStateManager.setGameState(new HighScoresState(HighScores.loadFromFile()))))
-                .addMenuItem(new MenuItem("Options", () -> GameStateManager.setGameState(ColorFall.getInstance().optionsMenuState)))
+                .addMenuItem(new MenuItem("Options", () -> GameStateManager.setGameState(ColorFall.getOptionsMenuState())))
                 .addMenuItem(new MenuItem("Exit", () -> System.exit(0)));
 
         MenuState optionsMenuState = new MenuState()
-                .addMenuItem(new MenuItem("Save and Return", () -> GameStateManager.setGameState(ColorFall.getInstance().mainMenuState)));
+                .addMenuItem(new MenuItem("Save and Return", () -> GameStateManager.setGameState(ColorFall.getMainMenuState())));
 
         ColorFall.initialize(mainMenuState, optionsMenuState);
 
