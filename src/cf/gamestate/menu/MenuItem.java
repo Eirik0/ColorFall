@@ -16,8 +16,8 @@ public class MenuItem {
         subMenu = new MenuItemList();
     }
 
-    public MenuItem addSubMenuItem(MenuItem menuItem) {
-        subMenu.add(menuItem);
+    public MenuItem addSubMenuItem(String itemName, Runnable itemAction) {
+        subMenu.add(new MenuItem(itemName, itemAction));
         return this;
     }
 }

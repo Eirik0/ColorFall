@@ -2,6 +2,7 @@ package cf.gameentity.score;
 
 import java.awt.Graphics2D;
 
+import cf.gamestate.gameover.HighScore;
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
 import gt.gameentity.GameEntity;
@@ -45,7 +46,7 @@ public class GameScore implements GameEntity {
         scoreAdder.drawOn(graphics);
         graphics.drawString("Level: " + level, LEFT_PADDING, LEVEL_Y);
         capturesAdder.drawOn(graphics);
-        graphics.drawString("Time: " + ColorFall.formatTime(time), LEFT_PADDING, TIME_Y);
+        graphics.drawString("Time: " + HighScore.formatTime(Math.round(time)), LEFT_PADDING, TIME_Y);
     }
 
     public int getScore() {

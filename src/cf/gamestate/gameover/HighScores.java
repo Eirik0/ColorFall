@@ -9,16 +9,18 @@ import cf.main.ColorFall;
 import gt.io.FileUtilities;
 
 public class HighScores {
-    public static final String EL_GRECO_1541 = "El Greco,1541,0,0,0";
-    public static final String HOLBEIN_1497 = "Hans Holbein the Younger,1497,0,0,0";
-    public static final String RAPHAEL_1483 = "Raffaello Sanzio da Urbino,1483,0,0,0";
-    public static final String MICHELANGELO_1475 = "Michelangelo di Lodovico Buonarroti Simoni,1475,0,0,0";
-    public static final String CRANACH_1472 = "Lucas Cranach the Elder,1472,0,0,0";
-    public static final String LEONARDO_1452 = "Leonardo da Vinci,1452,0,0,0";
-    public static final String GHIRLANDAIO_1449 = "Domenico Ghirlandaio,1449,0,0,0";
-    public static final String EYCK_1395 = "Jan van Eyck,1395,0,0,0";
-    public static final String DONATELLO_1386 = "Donato di Niccolo di Betto Bardi,1386,0,0,0";
-    public static final String DUCCIO_1260 = "Duccio di Buoninsegna,1260,0,0,0";
+    public static final int MAX_NUM_SCORES = 25;
+
+    public static final String EL_GRECO_1541 = "El Greco,1541,10,0,2287526400000";
+    public static final String HOLBEIN_1497 = "Hans Holbein the Younger,1497,10,7,1456185600000";
+    public static final String RAPHAEL_1483 = "Raffaello Sanzio da Urbino,1483,3,28,1168473600000";
+    public static final String MICHELANGELO_1475 = "Michelangelo di Lodovico Buonarroti Simoni,1475,3,28,2807222400000";
+    public static final String CRANACH_1472 = "Lucas Cranach the Elder,1472,0,0,2581113600000";
+    public static final String LEONARDO_1452 = "Leonardo da Vinci,1452,4,15,2115763200000";
+    public static final String GHIRLANDAIO_1448 = "Domenico Ghirlandaio,1448,6,2,1439337600000";
+    public static final String EYCK_1390 = "Jan van Eyck,1390,0,0,1625788800000";
+    public static final String DONATELLO_1386 = "Donato di Niccolo di Betto Bardi,1386,0,0,2554502400000";
+    public static final String DUCCIO_1255 = "Duccio di Buoninsegna,1255,0,0,1988150400000";
 
     private final List<HighScore> highScores = new ArrayList<>();
 
@@ -26,17 +28,17 @@ public class HighScores {
         return FileUtilities.loadFromFile(ColorFall.HIGH_SCORES_FILE_PATH, fileList -> new HighScores(fileList), () -> new HighScores());
     }
 
-    private HighScores() {
+    public HighScores() {
         highScores.add(new HighScore(EL_GRECO_1541));
         highScores.add(new HighScore(HOLBEIN_1497));
         highScores.add(new HighScore(RAPHAEL_1483));
         highScores.add(new HighScore(MICHELANGELO_1475));
         highScores.add(new HighScore(CRANACH_1472));
         highScores.add(new HighScore(LEONARDO_1452));
-        highScores.add(new HighScore(GHIRLANDAIO_1449));
-        highScores.add(new HighScore(EYCK_1395));
+        highScores.add(new HighScore(GHIRLANDAIO_1448));
+        highScores.add(new HighScore(EYCK_1390));
         highScores.add(new HighScore(DONATELLO_1386));
-        highScores.add(new HighScore(DUCCIO_1260));
+        highScores.add(new HighScore(DUCCIO_1255));
     }
 
     HighScores(List<String> stringList) {
@@ -53,19 +55,25 @@ public class HighScores {
         return highScores.get(i);
     }
 
-    public void saveToFile() throws IOException {
+    public void saveToFile() {
         File directory = new File(ColorFall.BASE_FILE_PATH);
         if (!directory.exists()) {
             directory.mkdirs();
         }
         File file = new File(ColorFall.HIGH_SCORES_FILE_PATH);
-        FileUtilities.listToFile(file, highScores, highScore -> highScore.toFileString() + System.lineSeparator());
+        try {
+            FileUtilities.listToFile(file, highScores, highScore -> highScore.toFileString() + System.lineSeparator());
+        } catch (IOException e) {
+        }
     }
 
     public int addHighScore(HighScore highScore) {
         int newScore = highScore.score;
         int rank = getRank(newScore);
         highScores.add(rank, highScore);
+        if (highScores.size() > MAX_NUM_SCORES) {
+            highScores.remove(MAX_NUM_SCORES);
+        }
         return rank;
     }
 

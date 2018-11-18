@@ -26,7 +26,7 @@ public class ColorFallMain {
         MenuItem startGameMenuItem = new MenuItem("Start", () -> GameStateManager.setGameState(new ColorFallState(ColorFall.getStartingLevel())));
         for (int i = 1; i < 100; ++i) {
             int level = i;
-            startGameMenuItem.addSubMenuItem(new MenuItem("* Level: " + level, () -> ColorFall.setStartingLevel(level)));
+            startGameMenuItem.addSubMenuItem("* Level: " + level, () -> ColorFall.setStartingLevel(level));
         }
 
         MenuState mainMenuState = new MenuState()
@@ -36,7 +36,11 @@ public class ColorFallMain {
                 .addMenuItem(new MenuItem("Exit", () -> System.exit(0)));
 
         MenuState optionsMenuState = new MenuState()
-                .addMenuItem(new MenuItem("Save and Return", () -> GameStateManager.setGameState(ColorFall.getMainMenuState())));
+                .addMenuItem(new MenuItem("Save and Return", () -> GameStateManager.setGameState(ColorFall.getMainMenuState())))
+                .addMenuItem(new MenuItem("Clear High Scores", MenuItem.NO_ACTION)
+                        .addSubMenuItem("No, Thank You", MenuItem.NO_ACTION)
+                        .addSubMenuItem("I'm Not Sure", MenuItem.NO_ACTION)
+                        .addSubMenuItem("Yes, Clear Immediately", () -> new HighScores().saveToFile()));
 
         ColorFall.initialize(mainMenuState, optionsMenuState);
 

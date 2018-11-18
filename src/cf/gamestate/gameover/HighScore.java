@@ -1,8 +1,8 @@
 package cf.gamestate.gameover;
 
-import cf.main.ColorFall;
-
 public class HighScore {
+    private static final long MS_PER_YEAR = 1000L * 60 * 60 * 24 * 365;
+
     public final String name;
     public final int score;
     public final int level;
@@ -73,6 +73,18 @@ public class HighScore {
 
     @Override
     public String toString() {
-        return name + ", " + score + ", " + level + ", " + captures + ", " + ColorFall.formatTime(time);
+        return name + ", " + score + ", " + level + ", " + captures + ", " + HighScore.formatTime(time);
+    }
+
+    public static String formatTime(long time) {
+        if (time >= MS_PER_YEAR) {
+            return (time / MS_PER_YEAR) + "y";
+        }
+        time /= 100;
+        long secondTenths = time % 10;
+        time /= 10;
+        long seconds = time % 60;
+        time /= 60;
+        return time + "m " + seconds + "." + secondTenths + "s";
     }
 }

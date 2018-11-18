@@ -19,12 +19,13 @@ public class HighScoresState implements GameState {
 
     private final HighScores highScores;
 
-    private GameImage scrollingScoreImage = new GameImage();
+    private final GameImage scrollingScoreImage = new GameImage();
 
+    private boolean hasResetScoreOffset = false;
     private double currentScoreOffset = -PIXELS_BETWEEN_SCORES / 2;
 
     private int width;
-    private int height;
+    private int scrollingImageHeight;
 
     public HighScoresState(HighScores highScores) {
         this.highScores = highScores;
@@ -34,21 +35,26 @@ public class HighScoresState implements GameState {
     public void update(double dt) {
         currentScoreOffset += dt / NANOS_PER_PIXEL;
         redrawScrollingScoreImage();
+        if (currentScoreOffset > PIXELS_BETWEEN_SCORES * highScores.size()) {
+            hasResetScoreOffset = true;
+            currentScoreOffset = -scrollingImageHeight + PIXELS_BETWEEN_SCORES;
+        }
     }
 
     private void redrawScrollingScoreImage() {
         Graphics2D graphics = scrollingScoreImage.getGraphics();
 
-        fillRect(graphics, 0, 0, width, height - TOP_SCORE_HEIGHT, ComponentCreator.backgroundColor());
+        fillRect(graphics, 0, 0, width, scrollingImageHeight, ComponentCreator.backgroundColor());
 
         graphics.setColor(Color.RED);
         graphics.setFont(ColorFall.GAME_FONT);
         for (int i = 1; i < highScores.size(); ++i) {
             double y = i * PIXELS_BETWEEN_SCORES;
-            if (currentScoreOffset > 0) { // this causes the scrolling to start with a delay
+            if (currentScoreOffset > 0 || hasResetScoreOffset) { // this causes the scrolling to start with a delay
                 y -= currentScoreOffset;
             }
-            graphics.drawString((i + 1) + ". " + highScores.get(i).toString(), 50, round(y));
+            String scoreText = (i + 1) + ". " + highScores.get(i).toString();
+            drawCenteredString(graphics, scoreText, width / 2, y);
         }
     }
 
@@ -62,7 +68,7 @@ public class HighScoresState implements GameState {
         graphics.setFont(ColorFall.GAME_FONT_LARGE);
 
         String topScoreLine1 = "1. " + topScore.name + "   Score: " + topScore.score;
-        String topScoreLine2 = "Level: " + topScore.level + "   Captures: " + topScore.captures + "   Time: " + ColorFall.formatTime(topScore.time);
+        String topScoreLine2 = "Level: " + topScore.level + "   Captures: " + topScore.captures + "   Time: " + HighScore.formatTime(topScore.time);
 
         drawCenteredString(graphics, topScoreLine1, width / 2, PIXELS_BETWEEN_SCORES);
         drawCenteredString(graphics, topScoreLine2, width / 2, PIXELS_BETWEEN_SCORES * 2);
@@ -73,8 +79,8 @@ public class HighScoresState implements GameState {
     @Override
     public void setSize(int width, int height) {
         this.width = width;
-        this.height = height;
-        scrollingScoreImage.setSize(width, height - TOP_SCORE_HEIGHT);
+        scrollingImageHeight = height - TOP_SCORE_HEIGHT;
+        scrollingScoreImage.setSize(width, scrollingImageHeight);
         redrawScrollingScoreImage();
     }
 

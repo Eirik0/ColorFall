@@ -2,7 +2,6 @@ package cf.gamestate.gameover;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.io.IOException;
 
 import cf.gameentity.score.GameScore;
 import cf.gamestate.colorfall.BouncingPolygon;
@@ -63,10 +62,7 @@ public class NameEntryState implements GameState {
             if (name.trim().length() > 0) {
                 HighScores highScores = HighScores.loadFromFile();
                 highScores.addHighScore(new HighScore(name, score.getScore(), score.getLevel(), score.getCaptures(), round(score.getTime())));
-                try {
-                    highScores.saveToFile();
-                } catch (IOException e) {
-                }
+                highScores.saveToFile();
                 GameStateManager.setGameState(new HighScoresState(highScores));
             }
             break;

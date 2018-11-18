@@ -67,16 +67,6 @@ public class ColorFall {
         instance.startingLevel = level;
     }
 
-    public static String formatTime(double timeDouble) {
-        long time = Math.round(timeDouble);
-        time /= 100;
-        long secondTenths = time % 10;
-        time /= 10;
-        long seconds = time % 60;
-        time /= 60;
-        return time + "m " + seconds + "." + secondTenths + "s";
-    }
-
     public static void drawCell(Graphics2D graphics, double x, double y, double radius, int color) {
         graphics.setColor(PALETTE[color]);
         DrawingMethods.fillCircleS(graphics, x, y, radius);
