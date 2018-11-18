@@ -29,7 +29,7 @@ public class ColorFall {
 
     public static final int CAPTURES_PER_LEVEL = 50;
 
-    public static final Color[] PALETTE = new Color[] { Color.BLACK, Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN };
+    public static final Color[] PALETTE = new Color[] { Color.BLACK, Color.RED, Color.GREEN, Color.BLUE, Color.CYAN, Color.MAGENTA, Color.YELLOW };
 
     private static ColorFall instance;
 
