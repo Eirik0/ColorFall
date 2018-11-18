@@ -65,7 +65,7 @@ public class HighScores {
     }
 
     public int addHighScore(HighScore highScore) {
-        int newScore = highScore.score;
+        long newScore = highScore.score;
         int rank = getRank(newScore);
         highScores.add(rank, highScore);
         if (highScores.size() > MAX_NUM_SCORES) {
@@ -74,11 +74,11 @@ public class HighScores {
         return rank;
     }
 
-    private int getRank(int newScore) {
+    public int getRank(long newScore) {
         int rank = 0;
         if (newScore <= highScores.get(0).score) { // Not first place
             for (int i = highScores.size() - 1; i >= 0; --i) {
-                if (newScore < highScores.get(i).score) {
+                if (newScore <= highScores.get(i).score) {
                     rank = i + 1;
                     break;
                 }

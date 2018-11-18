@@ -114,4 +114,12 @@ public class HighScoresTest {
         }
         assertEquals(HighScores.MAX_NUM_SCORES, highScores.size());
     }
+
+    @Test
+    public void testAppendHighScore() {
+        HighScores highScores = new HighScores();
+        int rank = highScores.getRank(100);
+        highScores.addHighScore(new HighScore("test", 100, 1, 0, 0));
+        assertEquals(rank + 1, highScores.getRank(100));
+    }
 }

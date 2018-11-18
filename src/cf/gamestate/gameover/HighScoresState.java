@@ -3,6 +3,8 @@ package cf.gamestate.gameover;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import cf.gameentity.score.GameScore;
+import cf.gamestate.colorfall.BouncingPolygon;
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
 import gt.component.GameImage;
@@ -21,6 +23,8 @@ public class HighScoresState implements GameState {
 
     private final GameImage scrollingScoreImage = new GameImage();
 
+    private final BouncingPolygon bouncingPolygon;
+
     private boolean hasResetScoreOffset = false;
     private double currentScoreOffset = -PIXELS_BETWEEN_SCORES / 2;
 
@@ -29,10 +33,12 @@ public class HighScoresState implements GameState {
 
     public HighScoresState(HighScores highScores) {
         this.highScores = highScores;
+        bouncingPolygon = new BouncingPolygon(scrollingScoreImage, Color.GREEN, highScores.get(0).level);
     }
 
     @Override
     public void update(double dt) {
+        bouncingPolygon.update(dt);
         currentScoreOffset += dt / NANOS_PER_PIXEL;
         redrawScrollingScoreImage();
         if (currentScoreOffset > PIXELS_BETWEEN_SCORES * highScores.size()) {
@@ -45,6 +51,7 @@ public class HighScoresState implements GameState {
         Graphics2D graphics = scrollingScoreImage.getGraphics();
 
         fillRect(graphics, 0, 0, width, scrollingImageHeight, ComponentCreator.backgroundColor());
+        bouncingPolygon.drawOn(graphics);
 
         graphics.setColor(Color.RED);
         graphics.setFont(ColorFall.GAME_FONT);
@@ -88,6 +95,15 @@ public class HighScoresState implements GameState {
     public void handleUserInput(UserInput input) {
         if (UserInput.isKeyboardInput(input)) {
             GameStateManager.setGameState(ColorFall.getMainMenuState());
+        }
+    }
+
+    public static GameState getGameOverState(GameScore score, BouncingPolygon bouncingPolygon) {
+        HighScores highScores = HighScores.loadFromFile();
+        if (highScores.getRank(score.getScore()) < HighScores.MAX_NUM_SCORES) {
+            return new NameEntryState(score, highScores, bouncingPolygon);
+        } else {
+            return new HighScoresState(highScores);
         }
     }
 }

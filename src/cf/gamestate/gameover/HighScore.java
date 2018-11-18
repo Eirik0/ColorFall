@@ -1,10 +1,12 @@
 package cf.gamestate.gameover;
 
+import java.util.Objects;
+
 public class HighScore {
     private static final long MS_PER_YEAR = 1000L * 60 * 60 * 24 * 365;
 
     public final String name;
-    public final int score;
+    public final long score;
     public final int level;
     public final int captures;
     public final long time;
@@ -12,7 +14,7 @@ public class HighScore {
     public HighScore(String s) {
         String[] split = s.split(",");
         name = split[0];
-        score = Integer.parseInt(split[1]);
+        score = Long.parseLong(split[1]);
         level = Integer.parseInt(split[2]);
         captures = Integer.parseInt(split[3]);
         time = Long.parseLong(split[4]);
@@ -34,11 +36,10 @@ public class HighScore {
     public int hashCode() {
         final int prime = 31;
         int result = prime + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + score;
+        result = prime * result + (int) (score ^ (score >>> 32));
         result = prime * result + level;
         result = prime * result + captures;
-        result = prime * result + (int) (time ^ (time >>> 32));
-        return result;
+        return prime * result + (int) (time ^ (time >>> 32));
     }
 
     @Override
@@ -49,31 +50,12 @@ public class HighScore {
             return false;
         }
         HighScore other = (HighScore) obj;
-        if (captures != other.captures) {
-            return false;
-        }
-        if (level != other.level) {
-            return false;
-        }
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        if (score != other.score) {
-            return false;
-        }
-        if (time != other.time) {
-            return false;
-        }
-        return true;
+        return Objects.equals(name, other.name) && score == other.score && level == other.level && captures == other.captures && time == other.time;
     }
 
     @Override
     public String toString() {
-        return name + ", " + score + ", " + level + ", " + captures + ", " + HighScore.formatTime(time);
+        return name + ", " + score + ", " + level + ", " + captures + ", " + formatTime(time);
     }
 
     public static String formatTime(long time) {

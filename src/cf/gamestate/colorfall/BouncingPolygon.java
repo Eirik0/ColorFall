@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Random;
 
+import gt.component.ComponentCreator;
 import gt.gameentity.GameEntity;
+import gt.gameentity.Sized;
 import gt.gameloop.TimeConstants;
 
 public class BouncingPolygon implements GameEntity {
@@ -12,7 +14,8 @@ public class BouncingPolygon implements GameEntity {
     private static final double TRAIL_TIME = TimeConstants.NANOS_PER_SECOND / 2;
     private static final int TRAIL_LENGTH = 25;
 
-    private final ColorFallState parentState;
+    private final Sized parent;
+    private final Color color;
     private final DurationTimer timer;
 
     private BouncingPolygonTrail[] trails;
@@ -31,16 +34,17 @@ public class BouncingPolygon implements GameEntity {
 
     private final int pointsToSkip;
 
-    public BouncingPolygon(ColorFallState parentState, int level) {
-        this(parentState, RADUIS * 1.5, RADUIS * 1.5, 0, 0.5, 0.5, Math.PI / 360, level);
+    public BouncingPolygon(Sized parent, Color color, int level) {
+        this(parent, color, RADUIS * 1.5, RADUIS * 1.5, 0, 0.5, 0.5, Math.PI / 360, level);
     }
 
     public BouncingPolygon nextLevelPolygon() {
-        return new BouncingPolygon(parentState, centerX, centerY, theta, dx, dy, dTheta, numSides + 1);
+        return new BouncingPolygon(parent, color, centerX, centerY, theta, dx, dy, dTheta, numSides + 1);
     }
 
-    private BouncingPolygon(ColorFallState parentState, double x, double y, double theta, double dx, double dy, double dTheta, int numSides) {
-        this.parentState = parentState;
+    private BouncingPolygon(Sized parent, Color color, double x, double y, double theta, double dx, double dy, double dTheta, int numSides) {
+        this.parent = parent;
+        this.color = color;
         timer = new DurationTimer(TRAIL_TIME);
 
         centerX = x;
@@ -107,8 +111,8 @@ public class BouncingPolygon implements GameEntity {
         }
 
         centerX += dx;
-        if (centerX > parentState.width - RADUIS) {
-            centerX = parentState.width - RADUIS;
+        if (centerX > parent.getWidth() - RADUIS) {
+            centerX = parent.getWidth() - RADUIS;
             dx *= -1;
             dTheta *= -1;
         } else if (centerX < RADUIS) {
@@ -118,8 +122,8 @@ public class BouncingPolygon implements GameEntity {
         }
 
         centerY += dy;
-        if (centerY > parentState.height - RADUIS) {
-            centerY = parentState.height - RADUIS;
+        if (centerY > parent.getHeight() - RADUIS) {
+            centerY = parent.getHeight() - RADUIS;
             dy *= -1;
             dTheta *= -1;
         } else if (centerY < RADUIS) {
@@ -139,7 +143,7 @@ public class BouncingPolygon implements GameEntity {
         double[] ys0 = trailStart.ys;
         int i = 0;
         while (i < TRAIL_LENGTH && trails[i] != null) {
-            graphics.setColor(fadeToColor(Color.RED, Color.BLACK, (double) i / TRAIL_LENGTH));
+            graphics.setColor(fadeToColor(color, ComponentCreator.backgroundColor(), ((double) i) / TRAIL_LENGTH));
             double[] xs1 = trails[i].xs;
             double[] ys1 = trails[i].ys;
             for (int j = 0; j < xs0.length; ++j) {
@@ -154,7 +158,7 @@ public class BouncingPolygon implements GameEntity {
 
         double x0 = xs[0];
         double y0 = ys[0];
-        graphics.setColor(Color.RED);
+        graphics.setColor(color);
         int index = 0;
         do {
             index = (index + pointsToSkip) % xs.length;

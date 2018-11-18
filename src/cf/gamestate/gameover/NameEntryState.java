@@ -13,6 +13,7 @@ import gt.gamestate.UserInput;
 
 public class NameEntryState implements GameState {
     private final GameScore score;
+    private final HighScores highScores;
     private final BouncingPolygon bouncingPolygon;
 
     private String name = "";
@@ -20,8 +21,9 @@ public class NameEntryState implements GameState {
     private int width;
     private int height;
 
-    public NameEntryState(GameScore score, BouncingPolygon bouncingPolygon) {
+    public NameEntryState(GameScore score, HighScores highScores, BouncingPolygon bouncingPolygon) {
         this.score = score;
+        this.highScores = highScores;
         this.bouncingPolygon = bouncingPolygon;
     }
 
@@ -60,7 +62,6 @@ public class NameEntryState implements GameState {
             break;
         case ENTER_KEY_PRESSED:
             if (name.trim().length() > 0) {
-                HighScores highScores = HighScores.loadFromFile();
                 highScores.addHighScore(new HighScore(name, score.getScore(), score.getLevel(), score.getCaptures(), round(score.getTime())));
                 highScores.saveToFile();
                 GameStateManager.setGameState(new HighScoresState(highScores));

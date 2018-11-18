@@ -1,20 +1,22 @@
 package cf.gamestate.colorfall;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.List;
 
 import cf.gameentity.score.GameScore;
 import cf.gameentity.update.CapturedCell;
-import cf.gamestate.gameover.NameEntryState;
+import cf.gamestate.gameover.HighScoresState;
 import cf.gamestate.menu.PauseMenuState;
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
 import gt.gameentity.GridSizer;
+import gt.gameentity.Sized;
 import gt.gamestate.GameState;
 import gt.gamestate.GameStateManager;
 import gt.gamestate.UserInput;
 
-public class ColorFallState implements GameState {
+public class ColorFallState implements GameState, Sized {
     final GameGrid gameGrid;
 
     final GameScore score;
@@ -30,7 +32,7 @@ public class ColorFallState implements GameState {
     GridSizer sizer;
 
     public ColorFallState(int level) {
-        bouncingPolygon = new BouncingPolygon(this, level);
+        bouncingPolygon = new BouncingPolygon(this, Color.RED, level);
 
         gameGrid = new GameGrid();
         score = new GameScore(0, level, 0);
@@ -43,7 +45,7 @@ public class ColorFallState implements GameState {
         fallingColumn = nextFallingColumn;
         nextFallingColumn = FallingColumn.newRandom(score.getLevel());
         if (gameGrid.get(fallingColumn.getX(), fallingColumn.getY()) != GameGrid.UNPLAYED) {
-            GameStateManager.setGameState(new NameEntryState(score, bouncingPolygon));
+            GameStateManager.setGameState(HighScoresState.getGameOverState(score, bouncingPolygon));
         }
     }
 
@@ -126,6 +128,16 @@ public class ColorFallState implements GameState {
         this.width = width;
         this.height = height;
         sizer = new GridSizer(width, height, GameGrid.WIDTH, GameGrid.HEIGHT);
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
     }
 
     @Override
