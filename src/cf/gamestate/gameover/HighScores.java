@@ -56,13 +56,10 @@ public class HighScores {
     }
 
     public void saveToFile() {
-        File directory = new File(ColorFall.BASE_FILE_PATH);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        File file = new File(ColorFall.HIGH_SCORES_FILE_PATH);
+        ColorFall.ensureColorFallDirectoryExists();
         try {
-            FileUtilities.listToFile(file, highScores, highScore -> highScore.toFileString() + System.lineSeparator());
+            FileUtilities.collectionToFile(new File(ColorFall.HIGH_SCORES_FILE_PATH), highScores,
+                    highScore -> highScore.toFileString() + System.lineSeparator());
         } catch (IOException e) {
         }
     }

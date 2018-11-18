@@ -36,13 +36,19 @@ public class ColorFallMain {
                 .addMenuItem(new MenuItem("Exit", () -> System.exit(0)));
 
         MenuState optionsMenuState = new MenuState()
-                .addMenuItem(new MenuItem("Save and Return", () -> GameStateManager.setGameState(ColorFall.getMainMenuState())))
+                .addMenuItem(new MenuItem("Return", () -> GameStateManager.setGameState(ColorFall.getMainMenuState())))
+                .addMenuItem(new MenuItem(ColorFallSettings.COLUMN_TYE_SETTING, MenuItem.NO_ACTION)
+                        .addSubMenuItem(ColorFallSettings.COLUMN_TYE_SQUARES,
+                                () -> ColorFallSettings.setSetting(ColorFallSettings.COLUMN_TYE_SETTING, ColorFallSettings.COLUMN_TYE_SQUARES))
+                        .addSubMenuItem(ColorFallSettings.COLUMN_TYE_CIRCLES,
+                                () -> ColorFallSettings.setSetting(ColorFallSettings.COLUMN_TYE_SETTING, ColorFallSettings.COLUMN_TYE_CIRCLES)))
                 .addMenuItem(new MenuItem("Clear High Scores", MenuItem.NO_ACTION)
                         .addSubMenuItem("No, Thank You", MenuItem.NO_ACTION)
                         .addSubMenuItem("I'm Not Sure", MenuItem.NO_ACTION)
                         .addSubMenuItem("Yes, Clear Immediately", () -> new HighScores().saveToFile()));
 
         ColorFall.initialize(mainMenuState, optionsMenuState);
+        ColorFallSettings.loadSettings();
 
         GameStateManager.setGameState(mainMenuState);
 
