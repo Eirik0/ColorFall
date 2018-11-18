@@ -20,6 +20,7 @@ public class ColorFallState implements GameState {
     final GameScore score;
 
     private FallingColumn fallingColumn;
+    private FallingColumn nextFallingColumn;
 
     private BouncingPolygon bouncingPolygon;
 
@@ -34,11 +35,13 @@ public class ColorFallState implements GameState {
         gameGrid = new GameGrid();
         score = new GameScore(0, level, 0);
 
-        nextFallingColumn();
+        nextFallingColumn = FallingColumn.newRandom(level);
+        setNextFallingColumn();
     }
 
-    public void nextFallingColumn() {
-        fallingColumn = FallingColumn.newRandom(score.getLevel());
+    public void setNextFallingColumn() {
+        fallingColumn = nextFallingColumn;
+        nextFallingColumn = FallingColumn.newRandom(score.getLevel());
         if (gameGrid.get(fallingColumn.getX(), fallingColumn.getY()) != GameGrid.UNPLAYED) {
             GameStateManager.setGameState(new NameEntryState(score, bouncingPolygon));
         }
@@ -72,7 +75,7 @@ public class ColorFallState implements GameState {
         if (capturedCells.size() > 0) {
             GameStateManager.setGameState(new GameUpdateState(this, capturedCells));
         } else {
-            nextFallingColumn();
+            setNextFallingColumn();
         }
     }
 
@@ -84,24 +87,37 @@ public class ColorFallState implements GameState {
     public void drawOn(Graphics2D graphics, boolean drawScore, boolean drawFallingColumn) {
         fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
         bouncingPolygon.drawOn(graphics);
-        drawRect(graphics, sizer.offsetX, sizer.offsetY, sizer.gridWidth, sizer.gridHeight, ComponentCreator.foregroundColor());
         if (drawScore) {
             score.drawOn(graphics);
         }
+
+        double cellRadius = sizer.cellSize / 2;
+
+        drawRect(graphics, sizer.offsetX, sizer.offsetY, sizer.gridWidth, sizer.gridHeight, ComponentCreator.foregroundColor());
         for (int x = 0; x < GameGrid.WIDTH; ++x) {
             for (int y = 0; y < GameGrid.HEIGHT; ++y) {
                 int color = gameGrid.get(x, y);
                 if (color != GameGrid.UNPLAYED) {
-                    ColorFall.drawCell(graphics, sizer.getCenterX(x), sizer.getCenterY(y), sizer.cellSize / 2, color);
+                    ColorFall.drawCell(graphics, sizer.getCenterX(x), sizer.getCenterY(y), cellRadius, color);
                 }
             }
         }
+
+        graphics.setFont(ColorFall.GAME_FONT);
+        graphics.setColor(ComponentCreator.foregroundColor());
+        double nextColumnX = sizer.offsetX + sizer.gridWidth + 20;
+        double nextColumnY = 40;
+        drawCenteredYString(graphics, "Next:", nextColumnX, 20);
+        ColorFall.drawCell(graphics, nextColumnX + cellRadius, nextColumnY + sizer.getCenterY(2), cellRadius, nextFallingColumn.getColor1());
+        ColorFall.drawCell(graphics, nextColumnX + cellRadius, nextColumnY + sizer.getCenterY(1), cellRadius, nextFallingColumn.getColor2());
+        ColorFall.drawCell(graphics, nextColumnX + cellRadius, nextColumnY + sizer.getCenterY(0), cellRadius, nextFallingColumn.getColor3());
+
         if (drawFallingColumn) {
             int fCX = fallingColumn.getX();
             int fCY = fallingColumn.getY();
-            ColorFall.drawCell(graphics, sizer.getCenterX(fCX), sizer.getCenterY(fCY), sizer.cellSize / 2, fallingColumn.getColor1());
-            ColorFall.drawCell(graphics, sizer.getCenterX(fCX), sizer.getCenterY(fCY - 1), sizer.cellSize / 2, fallingColumn.getColor2());
-            ColorFall.drawCell(graphics, sizer.getCenterX(fCX), sizer.getCenterY(fCY - 2), sizer.cellSize / 2, fallingColumn.getColor3());
+            ColorFall.drawCell(graphics, sizer.getCenterX(fCX), sizer.getCenterY(fCY), cellRadius, fallingColumn.getColor1());
+            ColorFall.drawCell(graphics, sizer.getCenterX(fCX), sizer.getCenterY(fCY - 1), cellRadius, fallingColumn.getColor2());
+            ColorFall.drawCell(graphics, sizer.getCenterX(fCX), sizer.getCenterY(fCY - 2), cellRadius, fallingColumn.getColor3());
         }
     }
 

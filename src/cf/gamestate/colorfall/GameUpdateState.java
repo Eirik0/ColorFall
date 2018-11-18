@@ -52,7 +52,7 @@ public class GameUpdateState implements GameState {
                 currentDrops = Collections.emptyList();
             }
         } else {
-            colorFallState.nextFallingColumn();
+            colorFallState.setNextFallingColumn();
             GameStateManager.setGameState(colorFallState);
         }
     }

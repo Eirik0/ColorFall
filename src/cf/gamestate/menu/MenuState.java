@@ -35,11 +35,11 @@ public class MenuState implements GameState {
         drawOn(graphics, true);
     }
 
-    public void drawOn(Graphics2D graphics, boolean fillBackground) {
-        if (fillBackground) {
+    public void drawOn(Graphics2D graphics, boolean drawBackground) {
+        if (drawBackground) {
             fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
+            ColorFall.getMenuBackground().drawOn(graphics);
         }
-        ColorFall.getMenuBackground().drawOn(graphics);
 
         for (int i = 0; i < menuItems.size(); ++i) {
             graphics.setFont(ColorFall.GAME_FONT_LARGE);
