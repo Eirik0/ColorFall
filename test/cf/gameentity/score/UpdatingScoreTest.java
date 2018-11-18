@@ -1,10 +1,8 @@
 package cf.gameentity.score;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-
-import cf.gameentity.score.UpdatingScore;
+import org.junit.jupiter.api.Test;
 
 public class UpdatingScoreTest {
     @Test
