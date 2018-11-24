@@ -28,7 +28,7 @@ public class GameUpdateState implements GameState {
 
     @Override
     public void update(double dt) {
-        colorFallState.update(dt, false);
+        colorFallState.update(dt, false, true);
         if (currentCaptures.size() > 0) {
             boolean allComplete = true;
             for (CapturedCell capturedCell : currentCaptures) {

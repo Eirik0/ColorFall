@@ -34,9 +34,15 @@ public class GameScore implements GameEntity {
 
     @Override
     public void update(double dt) {
+        update(dt, true);
+    }
+
+    public void update(double dt, boolean updateTimer) {
         scoreAdder.update(dt);
         capturesAdder.update(dt);
-        time += dt / TimeConstants.NANOS_PER_MILLISECOND;
+        if (updateTimer) {
+            time += dt / TimeConstants.NANOS_PER_MILLISECOND;
+        }
     }
 
     @Override

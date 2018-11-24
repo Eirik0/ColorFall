@@ -51,11 +51,11 @@ public class ColorFallState implements GameState, Sized {
 
     @Override
     public void update(double dt) {
-        update(dt, true);
+        update(dt, true, true);
     }
 
-    public void update(double dt, boolean updateFallingColumn) {
-        score.update(dt);
+    public void update(double dt, boolean updateFallingColumn, boolean updateTimer) {
+        score.update(dt, updateTimer);
         if (score.getLevel() > bouncingPolygon.numSides) {
             bouncingPolygon = bouncingPolygon.nextLevelPolygon();
         }

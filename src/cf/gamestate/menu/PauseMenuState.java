@@ -23,7 +23,7 @@ public class PauseMenuState implements GameState {
 
     @Override
     public void update(double dt) {
-        colorFallState.update(dt, false);
+        colorFallState.update(dt, false, false);
         pauseMenu.update(dt);
     }
 
