@@ -88,6 +88,15 @@ public class MenuState implements GameState {
             }
             menuItems.getSelectedItem().itemAction.run();
             break;
+        case MINUS_KEY_PRESSED:
+            ColorFall.getMenuBackground().decrementN();
+            break;
+        case EQUALS_KEY_PRESSED:
+            ColorFall.getMenuBackground().incrementN();
+            break;
+        case R_KEY_PRESSED:
+            ColorFall.getMenuBackground().setRandomColors();
+            break;
         }
     }
 }

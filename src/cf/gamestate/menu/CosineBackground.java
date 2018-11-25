@@ -8,26 +8,40 @@ import gt.component.ComponentCreator;
 import gt.gameentity.GameEntity;
 import gt.gameentity.GridSizer;
 import gt.gameentity.Sizable;
+import gt.gameloop.TimeConstants;
 
 public class CosineBackground implements GameEntity, Sizable {
+    private static final double SECONDS_PER_N = 50 * TimeConstants.NANOS_PER_SECOND;
     private static final double D_THETA = Math.PI / 1440;
 
-    private final Color color1;
-    private final Color color2;
+    private Color color1;
+    private Color color2;
 
     private double n = 0;
 
     private GridSizer sizer = new GridSizer(ComponentCreator.DEFAULT_WIDTH, ComponentCreator.DEFAULT_HEIGHT, 1, 1);
 
     public CosineBackground() {
+        setRandomColors();
+    }
+
+    public void setRandomColors() {
         Random random = new Random();
         color1 = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
         color2 = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
     }
 
+    public void incrementN() {
+        n += 0.25;
+    }
+
+    public void decrementN() {
+        n -= 0.25;
+    }
+
     @Override
     public void update(double dt) {
-        n += dt / 50000000000.0;
+        n += dt / SECONDS_PER_N;
     }
 
     @Override
