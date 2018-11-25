@@ -6,7 +6,7 @@ import java.util.List;
 
 import cf.gameentity.score.GameScore;
 import cf.gameentity.update.CapturedCell;
-import cf.gamestate.gameover.HighScoresState;
+import cf.gamestate.gameover.GameOverState;
 import cf.gamestate.menu.PauseMenuState;
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
@@ -45,7 +45,7 @@ public class ColorFallState implements GameState, Sized {
         fallingColumn = nextFallingColumn;
         nextFallingColumn = FallingColumn.newRandom(score.getLevel());
         if (gameGrid.get(fallingColumn.getX(), fallingColumn.getY()) != GameGrid.UNPLAYED) {
-            GameStateManager.setGameState(HighScoresState.getGameOverState(score, bouncingPolygon));
+            GameStateManager.setGameState(new GameOverState(this, score, bouncingPolygon));
         }
     }
 
@@ -83,10 +83,10 @@ public class ColorFallState implements GameState, Sized {
 
     @Override
     public void drawOn(Graphics2D graphics) {
-        drawOn(graphics, true, true);
+        drawOn(graphics, true, true, 0);
     }
 
-    public void drawOn(Graphics2D graphics, boolean drawScore, boolean drawFallingColumn) {
+    public void drawOn(Graphics2D graphics, boolean drawScore, boolean drawFallingColumn, double gameOverTimerPercent) {
         fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
         bouncingPolygon.drawOn(graphics);
         if (drawScore) {
@@ -100,7 +100,9 @@ public class ColorFallState implements GameState, Sized {
             for (int y = 0; y < GameGrid.HEIGHT; ++y) {
                 int color = gameGrid.get(x, y);
                 if (color != GameGrid.UNPLAYED) {
-                    ColorFall.drawCell(graphics, sizer.getCenterX(x), sizer.getCenterY(y), cellRadius, color);
+                    double centerY = sizer.getCenterY(y);
+                    centerY += (sizer.gridHeight + 2 * centerY) * gameOverTimerPercent;
+                    ColorFall.drawCell(graphics, sizer.getCenterX(x), centerY, cellRadius, color);
                 }
             }
         }

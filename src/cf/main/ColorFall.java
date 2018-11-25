@@ -26,6 +26,7 @@ public class ColorFall {
     public static final Font GAME_FONT = FileUtilities.loadFont("/cf/font/LCD_Solid.ttf", Font.TRUETYPE_FONT).deriveFont(Font.PLAIN, 24);
     public static final Font GAME_FONT_SMALL = GAME_FONT.deriveFont(Font.PLAIN, 18);
     public static final Font GAME_FONT_LARGE = GAME_FONT.deriveFont(Font.PLAIN, 30);
+    public static final Font GAME_FONT_XL = GAME_FONT.deriveFont(Font.PLAIN, 60);
 
     public static final int CAPTURES_PER_LEVEL = 50;
 

@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import cf.gameentity.score.GameScore;
 import cf.gamestate.colorfall.BouncingPolygon;
 import cf.gamestate.colorfall.ColorFallState;
-import cf.gamestate.gameover.HighScoresState;
+import cf.gamestate.gameover.GameOverState;
 import gt.gamestate.GameState;
 import gt.gamestate.GameStateManager;
 import gt.gamestate.UserInput;
@@ -18,7 +18,7 @@ public class PauseMenuState implements GameState {
         this.colorFallState = colorFallState;
         pauseMenu = new MenuState()
                 .addMenuItem(new MenuItem("Return", () -> GameStateManager.setGameState(colorFallState)))
-                .addMenuItem(new MenuItem("End Game", () -> GameStateManager.setGameState(HighScoresState.getGameOverState(score, bouncingPolygon))));
+                .addMenuItem(new MenuItem("End Game", () -> GameStateManager.setGameState(new GameOverState(colorFallState, score, bouncingPolygon))));
     }
 
     @Override
@@ -29,7 +29,7 @@ public class PauseMenuState implements GameState {
 
     @Override
     public void drawOn(Graphics2D graphics) {
-        colorFallState.drawOn(graphics, false, true);
+        colorFallState.drawOn(graphics, false, true, 0);
         pauseMenu.drawOn(graphics, false);
     }
 

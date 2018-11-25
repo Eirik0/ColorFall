@@ -3,7 +3,6 @@ package cf.gamestate.gameover;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import cf.gameentity.score.GameScore;
 import cf.gamestate.colorfall.BouncingPolygon;
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
@@ -95,15 +94,6 @@ public class HighScoresState implements GameState {
     public void handleUserInput(UserInput input) {
         if (UserInput.isKeyboardInput(input)) {
             GameStateManager.setGameState(ColorFall.getMainMenuState());
-        }
-    }
-
-    public static GameState getGameOverState(GameScore score, BouncingPolygon bouncingPolygon) {
-        HighScores highScores = HighScores.loadFromFile();
-        if (highScores.getRank(score.getScore()) < HighScores.MAX_NUM_SCORES) {
-            return new NameEntryState(score, highScores, bouncingPolygon);
-        } else {
-            return new HighScoresState(highScores);
         }
     }
 }
