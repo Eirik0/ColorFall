@@ -12,19 +12,23 @@ import cf.main.ColorFall;
 import gt.component.ComponentCreator;
 import gt.gameentity.GridSizer;
 import gt.gameentity.Sized;
+import gt.gameloop.TimeConstants;
 import gt.gamestate.GameState;
 import gt.gamestate.GameStateManager;
 import gt.gamestate.UserInput;
 
 public class ColorFallState implements GameState, Sized {
-    final GameGrid gameGrid;
+    private static final long LEVEL_UP_DURATION = TimeConstants.NANOS_PER_SECOND;
 
-    final GameScore score;
-
-    private FallingColumn fallingColumn;
-    private FallingColumn nextFallingColumn;
+    private final DurationTimer levelUpTimer;
 
     private BouncingPolygon bouncingPolygon;
+
+    final GameGrid gameGrid;
+    final GameScore score;
+
+    private FallingColumn nextFallingColumn;
+    private FallingColumn fallingColumn;
 
     int width;
     int height;
@@ -32,6 +36,8 @@ public class ColorFallState implements GameState, Sized {
     GridSizer sizer;
 
     public ColorFallState(int level) {
+        levelUpTimer = new DurationTimer(LEVEL_UP_DURATION);
+
         bouncingPolygon = new BouncingPolygon(this, Color.RED, level);
 
         gameGrid = new GameGrid();
@@ -54,10 +60,12 @@ public class ColorFallState implements GameState, Sized {
         update(dt, true, true);
     }
 
-    public void update(double dt, boolean updateFallingColumn, boolean updateTimer) {
-        score.update(dt, updateTimer);
+    public void update(double dt, boolean updateFallingColumn, boolean updateScoreTime) {
+        score.update(dt, updateScoreTime);
+        levelUpTimer.update(dt);
         if (score.getLevel() > bouncingPolygon.numSides) {
             bouncingPolygon = bouncingPolygon.nextLevelPolygon();
+            levelUpTimer.reset();
         }
         bouncingPolygon.update(dt);
         if (updateFallingColumn) {
@@ -87,15 +95,22 @@ public class ColorFallState implements GameState, Sized {
     }
 
     public void drawOn(Graphics2D graphics, boolean drawScore, boolean drawFallingColumn, double gameOverTimerPercent) {
-        fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
+        Color backgroundColor = levelUpTimer.getPercentComplete() >= 1 ? ComponentCreator.backgroundColor()
+                : fadeToColor(Color.DARK_GRAY, ComponentCreator.backgroundColor(), levelUpTimer.getPercentComplete());
+
+        fillRect(graphics, 0, 0, width, height, backgroundColor);
+        fillRect(graphics, sizer.offsetX, sizer.offsetY, sizer.gridWidth, sizer.gridHeight, ComponentCreator.backgroundColor());
+
         bouncingPolygon.drawOn(graphics);
+
+        drawRect(graphics, sizer.offsetX, sizer.offsetY, sizer.gridWidth, sizer.gridHeight, ComponentCreator.foregroundColor());
+
         if (drawScore) {
             score.drawOn(graphics);
         }
 
         double cellRadius = sizer.cellSize / 2;
 
-        drawRect(graphics, sizer.offsetX, sizer.offsetY, sizer.gridWidth, sizer.gridHeight, ComponentCreator.foregroundColor());
         for (int x = 0; x < GameGrid.WIDTH; ++x) {
             for (int y = 0; y < GameGrid.HEIGHT; ++y) {
                 int color = gameGrid.get(x, y);
