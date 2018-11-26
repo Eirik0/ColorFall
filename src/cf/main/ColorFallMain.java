@@ -24,7 +24,7 @@ public class ColorFallMain {
         GameStateManager.setMainPanel(mainPanel);
 
         MenuItem startGameMenuItem = new MenuItem("Start", () -> GameStateManager.setGameState(new ColorFallState(ColorFall.getStartingLevel())));
-        for (int i = 1; i < 100; ++i) {
+        for (int i = 1; i <= 10; ++i) {
             int level = i;
             startGameMenuItem.addSubMenuItem("* Level: " + level, () -> ColorFall.setStartingLevel(level));
         }

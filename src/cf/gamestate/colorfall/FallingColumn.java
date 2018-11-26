@@ -7,8 +7,9 @@ import gt.gameentity.Updatable;
 import gt.gameloop.TimeConstants;
 
 public class FallingColumn implements Updatable {
-    public static final double LEVEL_ONE_TICK_TIME = TimeConstants.NANOS_PER_SECOND;
-    private static final double LEVEL_ONE_HUNDRED_TICK_TIME = LEVEL_ONE_TICK_TIME / 10;
+    public static final double LEVEL_ONE_TICK_TIME = 1;
+    private static final double LEVEL_TWENTY_TICK_TIME = LEVEL_ONE_TICK_TIME / 10;
+    private static final double DECAY_LAMBDA = Math.log(LEVEL_TWENTY_TICK_TIME) / (20 - 1);
 
     private static final Random RANDOM = new Random();
 
@@ -33,9 +34,9 @@ public class FallingColumn implements Updatable {
         this.x = x;
         this.y = y;
 
-        double durationPerLerLevel = (LEVEL_ONE_HUNDRED_TICK_TIME - LEVEL_ONE_TICK_TIME) / (100 - 1);
+        double tickTime = 0.95 * Math.exp(DECAY_LAMBDA * (level - 1)) + 0.05;
 
-        tickTimer = new DurationTimer(durationPerLerLevel * level - durationPerLerLevel + LEVEL_ONE_TICK_TIME);
+        tickTimer = new DurationTimer(tickTime * TimeConstants.NANOS_PER_SECOND);
     }
 
     private static int randomColor() {

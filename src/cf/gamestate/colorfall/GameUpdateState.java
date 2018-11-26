@@ -17,7 +17,7 @@ public class GameUpdateState implements GameState {
     private List<CapturedCell> currentCaptures;
     private List<DroppingCell> currentDrops;
 
-    private int comboDepth = 1;
+    private int comboDepth = 0;
 
     public GameUpdateState(ColorFallState colorFallState, List<CapturedCell> currentCaptures) {
         this.colorFallState = colorFallState;
