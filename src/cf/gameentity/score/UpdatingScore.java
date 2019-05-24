@@ -2,7 +2,7 @@ package cf.gameentity.score;
 
 import java.awt.Graphics2D;
 
-import cf.gamestate.colorfall.DurationTimer;
+import gt.gameentity.DurationTimer;
 import gt.gameentity.GameEntity;
 import gt.gameloop.TimeConstants;
 

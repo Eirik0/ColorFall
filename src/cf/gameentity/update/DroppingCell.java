@@ -1,6 +1,6 @@
 package cf.gameentity.update;
 
-import cf.gamestate.colorfall.DurationTimer;
+import gt.gameentity.DurationTimer;
 import gt.gameloop.TimeConstants;
 
 public class DroppingCell {

@@ -10,6 +10,7 @@ import cf.gamestate.gameover.GameOverState;
 import cf.gamestate.menu.PauseMenuState;
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
+import gt.gameentity.DurationTimer;
 import gt.gameentity.GridSizer;
 import gt.gameentity.Sized;
 import gt.gameloop.TimeConstants;

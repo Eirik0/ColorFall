@@ -3,6 +3,7 @@ package cf.gamestate.colorfall;
 import java.util.Random;
 
 import cf.main.ColorFall;
+import gt.gameentity.DurationTimer;
 import gt.gameentity.Updatable;
 import gt.gameloop.TimeConstants;
 

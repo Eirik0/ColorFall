@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.util.Random;
 
 import gt.component.ComponentCreator;
+import gt.gameentity.DurationTimer;
 import gt.gameentity.GameEntity;
 import gt.gameentity.Sized;
 import gt.gameloop.TimeConstants;
