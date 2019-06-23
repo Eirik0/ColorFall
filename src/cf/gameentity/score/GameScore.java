@@ -1,11 +1,10 @@
 package cf.gameentity.score;
 
-import java.awt.Graphics2D;
-
 import cf.gamestate.gameover.HighScore;
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
 import gt.gameentity.GameEntity;
+import gt.gameentity.IGraphics;
 import gt.gameloop.TimeConstants;
 
 public class GameScore implements GameEntity {
@@ -16,7 +15,7 @@ public class GameScore implements GameEntity {
     private static final int TIME_Y = 400;
 
     private int score;
-    private int startingLevel;
+    private final int startingLevel;
     private int level;
     private int captures;
     private double time;
@@ -46,13 +45,13 @@ public class GameScore implements GameEntity {
     }
 
     @Override
-    public void drawOn(Graphics2D graphics) {
-        graphics.setColor(ComponentCreator.foregroundColor());
-        graphics.setFont(ColorFall.GAME_FONT);
-        scoreAdder.drawOn(graphics);
-        graphics.drawString("Level: " + level, LEFT_PADDING, LEVEL_Y);
-        capturesAdder.drawOn(graphics);
-        graphics.drawString("Time: " + HighScore.formatTime(Math.round(time)), LEFT_PADDING, TIME_Y);
+    public void drawOn(IGraphics g) {
+        g.setColor(ComponentCreator.foregroundColor());
+        g.setFont(ColorFall.GAME_FONT);
+        scoreAdder.drawOn(g);
+        g.drawString("Level: " + level, LEFT_PADDING, LEVEL_Y);
+        capturesAdder.drawOn(g);
+        g.drawString("Time: " + HighScore.formatTime(Math.round(time)), LEFT_PADDING, TIME_Y);
     }
 
     public int getScore() {

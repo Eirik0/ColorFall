@@ -1,12 +1,12 @@
 package cf.gamestate.menu;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.util.Random;
 
 import gt.component.ComponentCreator;
 import gt.gameentity.GameEntity;
 import gt.gameentity.GridSizer;
+import gt.gameentity.IGraphics;
 import gt.gameentity.Sizable;
 import gt.gameloop.TimeConstants;
 
@@ -45,23 +45,22 @@ public class CosineBackground implements GameEntity, Sizable {
     }
 
     @Override
-    public void drawOn(Graphics2D graphics) {
+    public void drawOn(IGraphics g) {
         double theta = 0;
         int i = 0;
 
         while (theta < 2 * Math.PI) {
             if (i % 5 == 0) {
-                graphics.setColor(color1);
+                g.setColor(color1);
             } else {
-                graphics.setColor(color2);
+                g.setColor(color2);
             }
 
             double r = sizer.cellSize / 2 * Math.sin(n * theta);
 
-            int x = round(r * Math.cos(theta) + sizer.getCenterX(0));
-            int y = round(sizer.getCenterY(0) - r * Math.sin(theta));
-
-            graphics.drawLine(x, y, x, y);
+            double x = r * Math.cos(theta) + sizer.getCenterX(0);
+            double y = sizer.getCenterY(0) - r * Math.sin(theta);
+            g.drawPixel(x, y);
 
             theta += D_THETA;
             ++i;

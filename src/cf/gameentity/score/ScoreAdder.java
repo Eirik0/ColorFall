@@ -1,10 +1,10 @@
 package cf.gameentity.score;
 
-import java.awt.Graphics2D;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import gt.gameentity.GameEntity;
+import gt.gameentity.IGraphics;
 
 public class ScoreAdder implements GameEntity {
     private final String name;
@@ -45,11 +45,11 @@ public class ScoreAdder implements GameEntity {
     }
 
     @Override
-    public void drawOn(Graphics2D graphics) {
+    public void drawOn(IGraphics g) {
         if (currentUpdate == null) {
-            graphics.drawString(name + ": " + value, x, y);
+            g.drawString(name + ": " + value, x, y);
         } else {
-            currentUpdate.drawOn(graphics);
+            currentUpdate.drawOn(g);
         }
     }
 

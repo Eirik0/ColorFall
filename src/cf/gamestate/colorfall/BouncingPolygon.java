@@ -1,12 +1,13 @@
 package cf.gamestate.colorfall;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.util.Random;
 
 import gt.component.ComponentCreator;
+import gt.gameentity.DrawingMethods;
 import gt.gameentity.DurationTimer;
 import gt.gameentity.GameEntity;
+import gt.gameentity.IGraphics;
 import gt.gameentity.Sized;
 import gt.gameloop.TimeConstants;
 
@@ -19,7 +20,7 @@ public class BouncingPolygon implements GameEntity {
     private final Color color;
     private final DurationTimer timer;
 
-    private BouncingPolygonTrail[] trails;
+    private final BouncingPolygonTrail[] trails;
 
     double centerX;
     double centerY;
@@ -138,17 +139,17 @@ public class BouncingPolygon implements GameEntity {
     }
 
     @Override
-    public void drawOn(Graphics2D graphics) {
+    public void drawOn(IGraphics g) {
         BouncingPolygonTrail trailStart = new BouncingPolygonTrail(xs, ys, centerX, centerY);
         double[] xs0 = trailStart.xs;
         double[] ys0 = trailStart.ys;
         int i = 0;
         while (i < TRAIL_LENGTH && trails[i] != null) {
-            graphics.setColor(fadeToColor(color, ComponentCreator.backgroundColor(), ((double) i) / TRAIL_LENGTH));
+            g.setColor(DrawingMethods.fadeToColor(color, ComponentCreator.backgroundColor(), ((double) i) / TRAIL_LENGTH));
             double[] xs1 = trails[i].xs;
             double[] ys1 = trails[i].ys;
             for (int j = 0; j < xs0.length; ++j) {
-                graphics.drawLine(round(xs0[j]), round(ys0[j]), round(xs1[j]), round(ys1[j]));
+                g.drawLine(xs0[j], ys0[j], xs1[j], ys1[j]);
             }
 
             xs0 = xs1;
@@ -159,7 +160,7 @@ public class BouncingPolygon implements GameEntity {
 
         double x0 = xs[0];
         double y0 = ys[0];
-        graphics.setColor(color);
+        g.setColor(color);
         int index = 0;
         do {
             index = (index + pointsToSkip) % xs.length;
@@ -167,7 +168,7 @@ public class BouncingPolygon implements GameEntity {
             double x1 = xs[index];
             double y1 = ys[index];
 
-            graphics.drawLine(round(centerX + x0), round(centerY + y0), round(centerX + x1), round(centerY + y1));
+            g.drawLine(centerX + x0, centerY + y0, centerX + x1, centerY + y1);
 
             x0 = x1;
             y0 = y1;

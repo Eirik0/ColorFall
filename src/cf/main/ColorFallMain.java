@@ -20,10 +20,10 @@ public class ColorFallMain {
 
         GamePanel mainPanel = new GamePanel("ColorFall");
         mainPanel.setPreferredSize(new Dimension(ComponentCreator.DEFAULT_WIDTH, ComponentCreator.DEFAULT_HEIGHT));
+        GameStateManager gameStateManager = mainPanel.getGameStateManager();
 
-        GameStateManager.setMainPanel(mainPanel);
-
-        MenuItem startGameMenuItem = new MenuItem("Start", () -> GameStateManager.setGameState(new ColorFallState(ColorFall.getStartingLevel())));
+        MenuItem startGameMenuItem = new MenuItem("Start",
+                () -> gameStateManager.setGameState(new ColorFallState(gameStateManager, ColorFall.getStartingLevel())));
         for (int i = 1; i <= 10; ++i) {
             int level = i;
             startGameMenuItem.addSubMenuItem("* Level: " + level, () -> ColorFall.setStartingLevel(level));
@@ -31,12 +31,12 @@ public class ColorFallMain {
 
         MenuState mainMenuState = new MenuState()
                 .addMenuItem(startGameMenuItem)
-                .addMenuItem(new MenuItem("High Scores", () -> GameStateManager.setGameState(new HighScoresState(HighScores.loadFromFile()))))
-                .addMenuItem(new MenuItem("Options", () -> GameStateManager.setGameState(ColorFall.getOptionsMenuState())))
+                .addMenuItem(new MenuItem("High Scores", () -> gameStateManager.setGameState(new HighScoresState(gameStateManager, HighScores.loadFromFile()))))
+                .addMenuItem(new MenuItem("Options", () -> gameStateManager.setGameState(ColorFall.getOptionsMenuState())))
                 .addMenuItem(new MenuItem("Exit", () -> System.exit(0)));
 
         MenuState optionsMenuState = new MenuState()
-                .addMenuItem(new MenuItem("Return", () -> GameStateManager.setGameState(ColorFall.getMainMenuState())))
+                .addMenuItem(new MenuItem("Return", () -> gameStateManager.setGameState(ColorFall.getMainMenuState())))
                 .addMenuItem(new MenuItem(ColorFallSettings.COLUMN_TYE_SETTING, MenuItem.NO_ACTION)
                         .addSubMenuItem(ColorFallSettings.COLUMN_TYE_SQUARES,
                                 () -> ColorFallSettings.setSetting(ColorFallSettings.COLUMN_TYE_SETTING, ColorFallSettings.COLUMN_TYE_SQUARES))
@@ -50,7 +50,7 @@ public class ColorFallMain {
         ColorFall.initialize(mainMenuState, optionsMenuState);
         ColorFallSettings.loadSettings();
 
-        GameStateManager.setGameState(mainMenuState);
+        gameStateManager.setGameState(mainMenuState);
 
         MainFrame mainFrame = new MainFrame(TITLE, mainPanel);
 

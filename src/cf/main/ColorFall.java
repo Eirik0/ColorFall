@@ -2,7 +2,6 @@ package cf.main;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.io.File;
 import java.util.Map;
 
@@ -10,6 +9,7 @@ import cf.gamestate.menu.CosineBackground;
 import cf.gamestate.menu.MenuState;
 import gt.component.ComponentCreator;
 import gt.gameentity.DrawingMethods;
+import gt.gameentity.IGraphics;
 import gt.io.FileUtilities;
 
 public class ColorFall {
@@ -87,17 +87,16 @@ public class ColorFall {
         instance.startingLevel = level;
     }
 
-    public static void drawCell(Graphics2D graphics, double x, double y, double radius, int colorInt) {
+    public static void drawCell(IGraphics g, double x, double y, double radius, int colorInt) {
         Color baseColor = PALETTE[colorInt];
         double percent = 1;
         double fade = 0.95;
         while (radius > 0) {
-            Color color = DrawingMethods.fadeToColorS(baseColor, ComponentCreator.foregroundColor(), 1 - percent);
+            Color color = DrawingMethods.fadeToColor(baseColor, ComponentCreator.foregroundColor(), 1 - percent);
             if (instance.columnType == 0) {
-                DrawingMethods.fillRectS(graphics, x - radius, y - radius, 2 * radius, 2 * radius, color);
+                g.fillRect(x - radius, y - radius, 2 * radius, 2 * radius, color);
             } else {
-                graphics.setColor(color);
-                DrawingMethods.fillCircleS(graphics, x, y, radius);
+                g.fillCircle(x, y, radius, color);
             }
             percent *= fade;
             radius -= 1;

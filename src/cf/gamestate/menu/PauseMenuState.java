@@ -1,11 +1,10 @@
 package cf.gamestate.menu;
 
-import java.awt.Graphics2D;
-
 import cf.gameentity.score.GameScore;
 import cf.gamestate.colorfall.BouncingPolygon;
 import cf.gamestate.colorfall.ColorFallState;
 import cf.gamestate.gameover.GameOverState;
+import gt.gameentity.IGraphics;
 import gt.gamestate.GameState;
 import gt.gamestate.GameStateManager;
 import gt.gamestate.UserInput;
@@ -14,11 +13,12 @@ public class PauseMenuState implements GameState {
     private final ColorFallState colorFallState;
     private final MenuState pauseMenu;
 
-    public PauseMenuState(ColorFallState colorFallState, GameScore score, BouncingPolygon bouncingPolygon) {
+    public PauseMenuState(GameStateManager gameStateManager, ColorFallState colorFallState, GameScore score, BouncingPolygon bouncingPolygon) {
         this.colorFallState = colorFallState;
         pauseMenu = new MenuState()
-                .addMenuItem(new MenuItem("Return", () -> GameStateManager.setGameState(colorFallState)))
-                .addMenuItem(new MenuItem("End Game", () -> GameStateManager.setGameState(new GameOverState(colorFallState, score, bouncingPolygon))));
+                .addMenuItem(new MenuItem("Return", () -> gameStateManager.setGameState(colorFallState)))
+                .addMenuItem(new MenuItem("End Game",
+                        () -> gameStateManager.setGameState(new GameOverState(gameStateManager, colorFallState, score, bouncingPolygon))));
     }
 
     @Override
@@ -28,9 +28,9 @@ public class PauseMenuState implements GameState {
     }
 
     @Override
-    public void drawOn(Graphics2D graphics) {
-        colorFallState.drawOn(graphics, false, true, 0);
-        pauseMenu.drawOn(graphics, false);
+    public void drawOn(IGraphics g) {
+        colorFallState.drawOn(g, false, true, 0);
+        pauseMenu.drawOn(g, false);
     }
 
     @Override

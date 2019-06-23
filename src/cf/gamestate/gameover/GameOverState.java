@@ -1,13 +1,13 @@
 package cf.gamestate.gameover;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 
 import cf.gameentity.score.GameScore;
 import cf.gamestate.colorfall.BouncingPolygon;
 import cf.gamestate.colorfall.ColorFallState;
 import cf.main.ColorFall;
 import gt.gameentity.DurationTimer;
+import gt.gameentity.IGraphics;
 import gt.gameloop.TimeConstants;
 import gt.gamestate.GameState;
 import gt.gamestate.GameStateManager;
@@ -16,16 +16,18 @@ import gt.gamestate.UserInput;
 public class GameOverState implements GameState {
     private static final double GAME_OVER_DURATION = TimeConstants.NANOS_PER_SECOND * 3;
 
+    private final GameStateManager gameStateManager;
     private final ColorFallState colorFallState;
-    private GameScore score;
-    private BouncingPolygon bouncingPolygon;
+    private final GameScore score;
+    private final BouncingPolygon bouncingPolygon;
 
     private final DurationTimer timer;
 
     int width;
     int height;
 
-    public GameOverState(ColorFallState colorFallState, GameScore score, BouncingPolygon bouncingPolygon) {
+    public GameOverState(GameStateManager gameStateManager, ColorFallState colorFallState, GameScore score, BouncingPolygon bouncingPolygon) {
+        this.gameStateManager = gameStateManager;
         this.colorFallState = colorFallState;
         this.score = score;
         this.bouncingPolygon = bouncingPolygon;
@@ -36,17 +38,17 @@ public class GameOverState implements GameState {
     public void update(double dt) {
         timer.update(dt);
         if (timer.getPercentComplete() >= 1) {
-            GameStateManager.setGameState(getGameOverState(score, bouncingPolygon));
+            gameStateManager.setGameState(getGameOverState(gameStateManager, score, bouncingPolygon));
         }
         colorFallState.update(dt, false, false);
     }
 
     @Override
-    public void drawOn(Graphics2D graphics) {
-        colorFallState.drawOn(graphics, true, true, timer.getPercentComplete());
-        graphics.setColor(Color.RED);
-        graphics.setFont(ColorFall.GAME_FONT_XL);
-        drawCenteredString(graphics, "GAME OVER", width / 2, height / 2);
+    public void drawOn(IGraphics g) {
+        colorFallState.drawOn(g, true, true, timer.getPercentComplete());
+        g.setColor(Color.RED);
+        g.setFont(ColorFall.GAME_FONT_XL);
+        g.drawCenteredString("GAME OVER", width / 2, height / 2);
     }
 
     @Override
@@ -60,12 +62,12 @@ public class GameOverState implements GameState {
     public void handleUserInput(UserInput input) {
     }
 
-    private static GameState getGameOverState(GameScore score, BouncingPolygon bouncingPolygon) {
+    private static GameState getGameOverState(GameStateManager gameStateManager, GameScore score, BouncingPolygon bouncingPolygon) {
         HighScores highScores = HighScores.loadFromFile();
         if (highScores.getRank(score.getScore()) < HighScores.MAX_NUM_SCORES) {
-            return new NameEntryState(score, highScores, bouncingPolygon);
+            return new NameEntryState(gameStateManager, score, highScores, bouncingPolygon);
         } else {
-            return new HighScoresState(highScores);
+            return new HighScoresState(gameStateManager, highScores);
         }
     }
 }

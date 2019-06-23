@@ -1,12 +1,13 @@
 package cf.gamestate.gameover;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 
 import cf.gamestate.colorfall.BouncingPolygon;
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
-import gt.component.GameImage;
+import gt.gameentity.GameImageDrawer;
+import gt.gameentity.IGameImage;
+import gt.gameentity.IGraphics;
 import gt.gameloop.TimeConstants;
 import gt.gamestate.GameState;
 import gt.gamestate.GameStateManager;
@@ -20,18 +21,23 @@ public class HighScoresState implements GameState {
 
     private final HighScores highScores;
 
-    private final GameImage scrollingScoreImage = new GameImage();
+    private final IGameImage scrollingScoreImage;
 
     private final BouncingPolygon bouncingPolygon;
 
     private boolean hasResetScoreOffset = false;
     private double currentScoreOffset = -PIXELS_BETWEEN_SCORES / 2;
 
+    private final GameImageDrawer imageDrawer;
+    private final GameStateManager gameStateManager;
     private int width;
     private int scrollingImageHeight;
 
-    public HighScoresState(HighScores highScores) {
+    public HighScoresState(GameStateManager gameStateManager, HighScores highScores) {
+        this.gameStateManager = gameStateManager;
+        imageDrawer = gameStateManager.getImageDrawer();
         this.highScores = highScores;
+        scrollingScoreImage = imageDrawer.newGameImage(ComponentCreator.DEFAULT_WIDTH, ComponentCreator.DEFAULT_HEIGHT - TOP_SCORE_HEIGHT);
         bouncingPolygon = new BouncingPolygon(scrollingScoreImage, Color.GREEN, highScores.get(0).level);
     }
 
@@ -47,39 +53,38 @@ public class HighScoresState implements GameState {
     }
 
     private void redrawScrollingScoreImage() {
-        Graphics2D graphics = scrollingScoreImage.getGraphics();
+        IGraphics g = scrollingScoreImage.getGraphics();
 
-        fillRect(graphics, 0, 0, width, scrollingImageHeight, ComponentCreator.backgroundColor());
-        bouncingPolygon.drawOn(graphics);
+        g.fillRect(0, 0, width, scrollingImageHeight, ComponentCreator.backgroundColor());
+        bouncingPolygon.drawOn(g);
 
-        graphics.setColor(Color.RED);
-        graphics.setFont(ColorFall.GAME_FONT);
+        g.setColor(Color.RED);
+        g.setFont(ColorFall.GAME_FONT);
         for (int i = 1; i < highScores.size(); ++i) {
             double y = i * PIXELS_BETWEEN_SCORES;
             if (currentScoreOffset > 0 || hasResetScoreOffset) { // this causes the scrolling to start with a delay
                 y -= currentScoreOffset;
             }
             String scoreText = (i + 1) + ". " + highScores.get(i).toString();
-            drawCenteredString(graphics, scoreText, width / 2, y);
+            g.drawCenteredString(scoreText, width / 2, y);
         }
     }
 
     @Override
-    public void drawOn(Graphics2D graphics) {
-        fillRect(graphics, 0, 0, width, TOP_SCORE_HEIGHT, ComponentCreator.backgroundColor());
+    public void drawOn(IGraphics g) {
+        g.fillRect(0, 0, width, TOP_SCORE_HEIGHT, ComponentCreator.backgroundColor());
 
         HighScore topScore = highScores.get(0);
 
-        graphics.setColor(Color.RED);
-        graphics.setFont(ColorFall.GAME_FONT_LARGE);
+        g.setColor(Color.RED);
+        g.setFont(ColorFall.GAME_FONT_LARGE);
 
         String topScoreLine1 = "1. " + topScore.name + "   Score: " + topScore.score;
         String topScoreLine2 = "Level: " + topScore.level + "   Captures: " + topScore.captures + "   Time: " + HighScore.formatTime(topScore.time);
 
-        drawCenteredString(graphics, topScoreLine1, width / 2, PIXELS_BETWEEN_SCORES);
-        drawCenteredString(graphics, topScoreLine2, width / 2, PIXELS_BETWEEN_SCORES * 2);
-
-        graphics.drawImage(scrollingScoreImage.getImage(), 0, TOP_SCORE_HEIGHT, null);
+        g.drawCenteredString(topScoreLine1, width / 2, PIXELS_BETWEEN_SCORES);
+        g.drawCenteredString(topScoreLine2, width / 2, PIXELS_BETWEEN_SCORES * 2);
+        imageDrawer.drawImage(g, scrollingScoreImage, 0, TOP_SCORE_HEIGHT);
     }
 
     @Override
@@ -93,7 +98,7 @@ public class HighScoresState implements GameState {
     @Override
     public void handleUserInput(UserInput input) {
         if (UserInput.isKeyboardInput(input)) {
-            GameStateManager.setGameState(ColorFall.getMainMenuState());
+            gameStateManager.setGameState(ColorFall.getMainMenuState());
         }
     }
 }

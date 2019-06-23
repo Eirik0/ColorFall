@@ -1,10 +1,10 @@
 package cf.gamestate.menu;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
+import gt.gameentity.IGraphics;
 import gt.gamestate.GameState;
 import gt.gamestate.UserInput;
 
@@ -31,30 +31,26 @@ public class MenuState implements GameState {
     }
 
     @Override
-    public void drawOn(Graphics2D graphics) {
-        drawOn(graphics, true);
+    public void drawOn(IGraphics g) {
+        drawOn(g, true);
     }
 
-    public void drawOn(Graphics2D graphics, boolean drawBackground) {
+    public void drawOn(IGraphics g, boolean drawBackground) {
         if (drawBackground) {
-            fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
-            ColorFall.getMenuBackground().drawOn(graphics);
+            g.fillRect(0, 0, width, height, ComponentCreator.backgroundColor());
+            ColorFall.getMenuBackground().drawOn(g);
         }
 
         for (int i = 0; i < menuItems.size(); ++i) {
-            graphics.setFont(ColorFall.GAME_FONT_LARGE);
-            if (i == menuItems.getSelectionIndex()) {
-                graphics.setColor(Color.GREEN);
-            } else {
-                graphics.setColor(Color.RED);
-            }
             MenuItem item = menuItems.getItem(i);
             int cordinate = (i + 1) * PIXELS_BETWEEN_ITEMS;
-            graphics.drawString(item.itemName, cordinate, cordinate);
+            g.setColor(i == menuItems.getSelectionIndex() ? Color.GREEN : Color.RED);
+            g.setFont(ColorFall.GAME_FONT_LARGE);
+            g.drawString(item.itemName, cordinate, cordinate);
             if (item.subMenu.size() > 0) {
-                graphics.setFont(ColorFall.GAME_FONT_SMALL);
+                g.setFont(ColorFall.GAME_FONT_SMALL);
                 int subMenuCoordiante = cordinate + PIXELS_TO_SUBMENU;
-                graphics.drawString(item.subMenu.getSelectedItem().itemName, subMenuCoordiante, subMenuCoordiante);
+                g.drawString(item.subMenu.getSelectedItem().itemName, subMenuCoordiante, subMenuCoordiante);
             }
         }
     }

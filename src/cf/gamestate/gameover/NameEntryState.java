@@ -1,17 +1,19 @@
 package cf.gamestate.gameover;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 
 import cf.gameentity.score.GameScore;
 import cf.gamestate.colorfall.BouncingPolygon;
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
+import gt.gameentity.IGraphics;
 import gt.gamestate.GameState;
 import gt.gamestate.GameStateManager;
 import gt.gamestate.UserInput;
+import gt.util.EMath;
 
 public class NameEntryState implements GameState {
+    private final GameStateManager gameStateManager;
     private final GameScore score;
     private final HighScores highScores;
     private final BouncingPolygon bouncingPolygon;
@@ -21,7 +23,8 @@ public class NameEntryState implements GameState {
     private int width;
     private int height;
 
-    public NameEntryState(GameScore score, HighScores highScores, BouncingPolygon bouncingPolygon) {
+    public NameEntryState(GameStateManager gameStateManager, GameScore score, HighScores highScores, BouncingPolygon bouncingPolygon) {
+        this.gameStateManager = gameStateManager;
         this.score = score;
         this.highScores = highScores;
         this.bouncingPolygon = bouncingPolygon;
@@ -33,19 +36,19 @@ public class NameEntryState implements GameState {
     }
 
     @Override
-    public void drawOn(Graphics2D graphics) {
-        fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
-        bouncingPolygon.drawOn(graphics);
+    public void drawOn(IGraphics g) {
+        g.fillRect(0, 0, width, height, ComponentCreator.backgroundColor());
+        bouncingPolygon.drawOn(g);
 
-        graphics.setColor(Color.GREEN);
-        graphics.setFont(ColorFall.GAME_FONT_LARGE);
-        drawCenteredXString(graphics, score.toString(), width / 2, 100);
+        g.setColor(Color.GREEN);
+        g.setFont(ColorFall.GAME_FONT_LARGE);
+        g.drawCenteredXString(score.toString(), width / 2, 100);
 
-        graphics.setFont(ColorFall.GAME_FONT);
-        drawCenteredXString(graphics, "Enter Name:", width / 2, 200);
+        g.setFont(ColorFall.GAME_FONT);
+        g.drawCenteredXString("Enter Name:", width / 2, 200);
 
-        graphics.setFont(ColorFall.GAME_FONT_LARGE);
-        drawCenteredXString(graphics, name + "_", width / 2, 275);
+        g.setFont(ColorFall.GAME_FONT_LARGE);
+        g.drawCenteredXString(name + "_", width / 2, 275);
     }
 
     @Override
@@ -62,9 +65,9 @@ public class NameEntryState implements GameState {
             break;
         case ENTER_KEY_PRESSED:
             if (name.trim().length() > 0) {
-                highScores.addHighScore(new HighScore(name, score.getScore(), score.getLevel(), score.getCaptures(), round(score.getTime())));
+                highScores.addHighScore(new HighScore(name, score.getScore(), score.getLevel(), score.getCaptures(), EMath.round(score.getTime())));
                 highScores.saveToFile();
-                GameStateManager.setGameState(new HighScoresState(highScores));
+                gameStateManager.setGameState(new HighScoresState(gameStateManager, highScores));
             }
             break;
         default:

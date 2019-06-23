@@ -1,7 +1,6 @@
 package cf.gamestate.colorfall;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.util.List;
 
 import cf.gameentity.score.GameScore;
@@ -10,8 +9,10 @@ import cf.gamestate.gameover.GameOverState;
 import cf.gamestate.menu.PauseMenuState;
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
+import gt.gameentity.DrawingMethods;
 import gt.gameentity.DurationTimer;
 import gt.gameentity.GridSizer;
+import gt.gameentity.IGraphics;
 import gt.gameentity.Sized;
 import gt.gameloop.TimeConstants;
 import gt.gamestate.GameState;
@@ -20,6 +21,8 @@ import gt.gamestate.UserInput;
 
 public class ColorFallState implements GameState, Sized {
     private static final long LEVEL_UP_DURATION = TimeConstants.NANOS_PER_SECOND;
+
+    private final GameStateManager gameStateManager;
 
     private final DurationTimer levelUpTimer;
 
@@ -36,7 +39,8 @@ public class ColorFallState implements GameState, Sized {
 
     GridSizer sizer;
 
-    public ColorFallState(int level) {
+    public ColorFallState(GameStateManager gameStateManager, int level) {
+        this.gameStateManager = gameStateManager;
         levelUpTimer = new DurationTimer(LEVEL_UP_DURATION);
 
         bouncingPolygon = new BouncingPolygon(this, Color.RED, level);
@@ -52,7 +56,7 @@ public class ColorFallState implements GameState, Sized {
         fallingColumn = nextFallingColumn;
         nextFallingColumn = FallingColumn.newRandom(score.getLevel());
         if (gameGrid.get(fallingColumn.getX(), fallingColumn.getY()) != GameGrid.UNPLAYED) {
-            GameStateManager.setGameState(new GameOverState(this, score, bouncingPolygon));
+            gameStateManager.setGameState(new GameOverState(gameStateManager, this, score, bouncingPolygon));
         }
     }
 
@@ -84,30 +88,30 @@ public class ColorFallState implements GameState, Sized {
     private void placeFallingColumn() {
         List<CapturedCell> capturedCells = gameGrid.placeColumn(fallingColumn);
         if (capturedCells.size() > 0) {
-            GameStateManager.setGameState(new GameUpdateState(this, capturedCells));
+            gameStateManager.setGameState(new GameUpdateState(gameStateManager, this, capturedCells));
         } else {
             setNextFallingColumn();
         }
     }
 
     @Override
-    public void drawOn(Graphics2D graphics) {
-        drawOn(graphics, true, true, 0);
+    public void drawOn(IGraphics g) {
+        drawOn(g, true, true, 0);
     }
 
-    public void drawOn(Graphics2D graphics, boolean drawScore, boolean drawFallingColumn, double gameOverTimerPercent) {
+    public void drawOn(IGraphics g, boolean drawScore, boolean drawFallingColumn, double gameOverTimerPercent) {
         Color backgroundColor = levelUpTimer.getPercentComplete() >= 1 ? ComponentCreator.backgroundColor()
-                : fadeToColor(Color.DARK_GRAY, ComponentCreator.backgroundColor(), levelUpTimer.getPercentComplete());
+                : DrawingMethods.fadeToColor(Color.DARK_GRAY, ComponentCreator.backgroundColor(), levelUpTimer.getPercentComplete());
 
-        fillRect(graphics, 0, 0, width, height, backgroundColor);
-        fillRect(graphics, sizer.offsetX, sizer.offsetY, sizer.gridWidth, sizer.gridHeight, ComponentCreator.backgroundColor());
+        g.fillRect(0, 0, width, height, backgroundColor);
+        g.fillRect(sizer.offsetX, sizer.offsetY, sizer.gridWidth + 1, sizer.gridHeight, ComponentCreator.backgroundColor());
 
-        bouncingPolygon.drawOn(graphics);
+        bouncingPolygon.drawOn(g);
 
-        drawRect(graphics, sizer.offsetX, sizer.offsetY, sizer.gridWidth, sizer.gridHeight, ComponentCreator.foregroundColor());
+        g.drawRect(sizer.offsetX, sizer.offsetY, sizer.gridWidth + 1, sizer.gridHeight, ComponentCreator.foregroundColor());
 
         if (drawScore) {
-            score.drawOn(graphics);
+            score.drawOn(g);
         }
 
         double cellRadius = sizer.cellSize / 2;
@@ -118,26 +122,26 @@ public class ColorFallState implements GameState, Sized {
                 if (color != GameGrid.UNPLAYED) {
                     double centerY = sizer.getCenterY(y);
                     centerY += (sizer.gridHeight + 2 * centerY) * gameOverTimerPercent;
-                    ColorFall.drawCell(graphics, sizer.getCenterX(x), centerY, cellRadius, color);
+                    ColorFall.drawCell(g, sizer.getCenterX(x), centerY, cellRadius, color);
                 }
             }
         }
 
-        graphics.setFont(ColorFall.GAME_FONT);
-        graphics.setColor(ComponentCreator.foregroundColor());
         double nextColumnX = sizer.offsetX + sizer.gridWidth + 20;
         double nextColumnY = 40;
-        drawCenteredYString(graphics, "Next:", nextColumnX, 20);
-        ColorFall.drawCell(graphics, nextColumnX + cellRadius, nextColumnY + sizer.getCenterY(2), cellRadius, nextFallingColumn.getColor1());
-        ColorFall.drawCell(graphics, nextColumnX + cellRadius, nextColumnY + sizer.getCenterY(1), cellRadius, nextFallingColumn.getColor2());
-        ColorFall.drawCell(graphics, nextColumnX + cellRadius, nextColumnY + sizer.getCenterY(0), cellRadius, nextFallingColumn.getColor3());
+        g.setColor(ComponentCreator.foregroundColor());
+        g.setFont(ColorFall.GAME_FONT);
+        g.drawCenteredYString("Next:", nextColumnX, 20);
+        ColorFall.drawCell(g, nextColumnX + cellRadius, nextColumnY + sizer.getCenterY(2), cellRadius, nextFallingColumn.getColor1());
+        ColorFall.drawCell(g, nextColumnX + cellRadius, nextColumnY + sizer.getCenterY(1), cellRadius, nextFallingColumn.getColor2());
+        ColorFall.drawCell(g, nextColumnX + cellRadius, nextColumnY + sizer.getCenterY(0), cellRadius, nextFallingColumn.getColor3());
 
         if (drawFallingColumn) {
             int fCX = fallingColumn.getX();
             int fCY = fallingColumn.getY();
-            ColorFall.drawCell(graphics, sizer.getCenterX(fCX), sizer.getCenterY(fCY), cellRadius, fallingColumn.getColor1());
-            ColorFall.drawCell(graphics, sizer.getCenterX(fCX), sizer.getCenterY(fCY - 1), cellRadius, fallingColumn.getColor2());
-            ColorFall.drawCell(graphics, sizer.getCenterX(fCX), sizer.getCenterY(fCY - 2), cellRadius, fallingColumn.getColor3());
+            ColorFall.drawCell(g, sizer.getCenterX(fCX), sizer.getCenterY(fCY), cellRadius, fallingColumn.getColor1());
+            ColorFall.drawCell(g, sizer.getCenterX(fCX), sizer.getCenterY(fCY - 1), cellRadius, fallingColumn.getColor2());
+            ColorFall.drawCell(g, sizer.getCenterX(fCX), sizer.getCenterY(fCY - 2), cellRadius, fallingColumn.getColor3());
         }
     }
 
@@ -174,7 +178,7 @@ public class ColorFallState implements GameState, Sized {
             fallingColumn.maybeMove(gameGrid, 1, 0);
             break;
         case ESC_KEY_PRESSED:
-            GameStateManager.setGameState(new PauseMenuState(this, score, bouncingPolygon));
+            gameStateManager.setGameState(new PauseMenuState(gameStateManager, this, score, bouncingPolygon));
             break;
         }
     }

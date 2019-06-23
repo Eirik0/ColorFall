@@ -1,10 +1,10 @@
 package cf.gameentity.score;
 
-import java.awt.Graphics2D;
-
 import gt.gameentity.DurationTimer;
 import gt.gameentity.GameEntity;
+import gt.gameentity.IGraphics;
 import gt.gameloop.TimeConstants;
+import gt.util.DoublePair;
 
 public class UpdatingScore implements GameEntity {
     public static final long DURATION = TimeConstants.NANOS_PER_SECOND / 5;
@@ -64,13 +64,14 @@ public class UpdatingScore implements GameEntity {
     }
 
     @Override
-    public void drawOn(Graphics2D graphics) {
+    public void drawOn(IGraphics g) {
         double percentComplete = timer.getPercentComplete();
-        graphics.drawString(prefix, x, y);
-        int prefixWidth = graphics.getFontMetrics().stringWidth(prefix);
-        int prefixHeight = graphics.getFontMetrics().getHeight();
-        graphics.drawString(pendingSuffix, x + prefixWidth, round(y + prefixHeight - percentComplete * prefixHeight));
-        graphics.drawString(finishedSuffix, x + prefixWidth, round(y - percentComplete * prefixHeight));
+        g.drawString(prefix, x, y);
+        DoublePair stringDimensions = g.getStringDimensions(prefix);
+        double prefixWidth = stringDimensions.getFirst();
+        double prefixHeight = stringDimensions.getSecond() * 1.5;
+        g.drawString(pendingSuffix, x + prefixWidth, y + prefixHeight - percentComplete * prefixHeight);
+        g.drawString(finishedSuffix, x + prefixWidth, y - percentComplete * prefixHeight);
     }
 
     public String getPrefix() {
