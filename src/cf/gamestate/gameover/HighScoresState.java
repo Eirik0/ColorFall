@@ -5,7 +5,7 @@ import java.awt.Color;
 import cf.gamestate.colorfall.BouncingPolygon;
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
-import gt.gameentity.GameImageDrawer;
+import gt.gameentity.IGameImageDrawer;
 import gt.gameentity.IGameImage;
 import gt.gameentity.IGraphics;
 import gt.gameloop.TimeConstants;
@@ -28,7 +28,7 @@ public class HighScoresState implements GameState {
     private boolean hasResetScoreOffset = false;
     private double currentScoreOffset = -PIXELS_BETWEEN_SCORES / 2;
 
-    private final GameImageDrawer imageDrawer;
+    private final IGameImageDrawer imageDrawer;
     private final GameStateManager gameStateManager;
     private int width;
     private int scrollingImageHeight;
