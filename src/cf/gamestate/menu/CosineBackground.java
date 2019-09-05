@@ -68,7 +68,7 @@ public class CosineBackground implements GameEntity, Sizable {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(double width, double height) {
         sizer = new GridSizer(width, height, 1, 1);
     }
 }

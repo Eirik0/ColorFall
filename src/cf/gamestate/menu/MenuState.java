@@ -14,11 +14,8 @@ public class MenuState implements GameState {
 
     private final MenuItemList menuItems = new MenuItemList();
 
-    int width;
-    int height;
-
-    public MenuState() {
-    }
+    double width;
+    double height;
 
     public MenuState addMenuItem(MenuItem menuItem) {
         menuItems.add(menuItem);
@@ -56,7 +53,7 @@ public class MenuState implements GameState {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(double width, double height) {
         this.width = width;
         this.height = height;
         ColorFall.getMenuBackground().setSize(width, height);

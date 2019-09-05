@@ -34,8 +34,8 @@ public class ColorFallState implements GameState, Sized {
     private FallingColumn nextFallingColumn;
     private FallingColumn fallingColumn;
 
-    int width;
-    int height;
+    double width;
+    double height;
 
     GridSizer sizer;
 
@@ -146,19 +146,19 @@ public class ColorFallState implements GameState, Sized {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(double width, double height) {
         this.width = width;
         this.height = height;
         sizer = new GridSizer(width, height, GameGrid.WIDTH, GameGrid.HEIGHT);
     }
 
     @Override
-    public int getWidth() {
+    public double getWidth() {
         return width;
     }
 
     @Override
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 

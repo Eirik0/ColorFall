@@ -23,8 +23,8 @@ public class GameOverState implements GameState {
 
     private final DurationTimer timer;
 
-    int width;
-    int height;
+    double width;
+    double height;
 
     public GameOverState(GameStateManager gameStateManager, ColorFallState colorFallState, GameScore score, BouncingPolygon bouncingPolygon) {
         this.gameStateManager = gameStateManager;
@@ -52,7 +52,7 @@ public class GameOverState implements GameState {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(double width, double height) {
         this.width = width;
         this.height = height;
         colorFallState.setSize(width, height);

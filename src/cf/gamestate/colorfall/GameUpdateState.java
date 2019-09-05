@@ -78,7 +78,7 @@ public class GameUpdateState implements GameState {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(double width, double height) {
         colorFallState.setSize(width, height);
     }
 

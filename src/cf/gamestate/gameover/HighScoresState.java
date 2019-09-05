@@ -5,8 +5,8 @@ import java.awt.Color;
 import cf.gamestate.colorfall.BouncingPolygon;
 import cf.main.ColorFall;
 import gt.component.ComponentCreator;
-import gt.gameentity.IGameImageDrawer;
 import gt.gameentity.IGameImage;
+import gt.gameentity.IGameImageDrawer;
 import gt.gameentity.IGraphics;
 import gt.gameloop.TimeConstants;
 import gt.gamestate.GameState;
@@ -30,8 +30,8 @@ public class HighScoresState implements GameState {
 
     private final IGameImageDrawer imageDrawer;
     private final GameStateManager gameStateManager;
-    private int width;
-    private int scrollingImageHeight;
+    private double width;
+    private double scrollingImageHeight;
 
     public HighScoresState(GameStateManager gameStateManager, HighScores highScores) {
         this.gameStateManager = gameStateManager;
@@ -88,7 +88,7 @@ public class HighScoresState implements GameState {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(double width, double height) {
         this.width = width;
         scrollingImageHeight = height - TOP_SCORE_HEIGHT;
         scrollingScoreImage.setSize(width, scrollingImageHeight);

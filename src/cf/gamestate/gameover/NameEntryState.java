@@ -20,8 +20,8 @@ public class NameEntryState implements GameState {
 
     private String name = "";
 
-    private int width;
-    private int height;
+    private double width;
+    private double height;
 
     public NameEntryState(GameStateManager gameStateManager, GameScore score, HighScores highScores, BouncingPolygon bouncingPolygon) {
         this.gameStateManager = gameStateManager;
@@ -52,7 +52,7 @@ public class NameEntryState implements GameState {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(double width, double height) {
         this.width = width;
         this.height = height;
     }
