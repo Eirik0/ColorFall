@@ -1,7 +1,6 @@
 package cf.gamestate.gameover;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,11 +56,8 @@ public class HighScores {
 
     public void saveToFile() {
         ColorFall.ensureColorFallDirectoryExists();
-        try {
-            FileUtilities.collectionToFile(new File(ColorFall.HIGH_SCORES_FILE_PATH), highScores,
-                    highScore -> highScore.toFileString() + System.lineSeparator());
-        } catch (IOException e) {
-        }
+        FileUtilities.collectionToFile(new File(ColorFall.HIGH_SCORES_FILE_PATH), highScores,
+                highScore -> highScore.toFileString() + System.lineSeparator());
     }
 
     public int addHighScore(HighScore highScore) {

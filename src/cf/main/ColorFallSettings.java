@@ -1,7 +1,6 @@
 package cf.main;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,11 +36,8 @@ public class ColorFallSettings {
 
     private static void saveSettings() {
         ColorFall.ensureColorFallDirectoryExists();
-        try {
-            FileUtilities.collectionToFile(new File(ColorFall.SETTINGS_FILE_PATH), instance.settingsMap.entrySet(),
-                    entry -> entry.getKey() + "," + entry.getValue() + System.lineSeparator());
-        } catch (IOException e) {
-        }
+        FileUtilities.collectionToFile(new File(ColorFall.SETTINGS_FILE_PATH), instance.settingsMap.entrySet(),
+                entry -> entry.getKey() + "," + entry.getValue() + System.lineSeparator());
     }
 
     public static String getSetting(String settingName, String defaultValue) {

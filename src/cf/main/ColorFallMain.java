@@ -1,13 +1,10 @@
 package cf.main;
 
-import java.awt.Dimension;
-
 import cf.gamestate.colorfall.ColorFallState;
 import cf.gamestate.gameover.HighScores;
 import cf.gamestate.gameover.HighScoresState;
 import cf.gamestate.menu.MenuItem;
 import cf.gamestate.menu.MenuState;
-import gt.component.ComponentCreator;
 import gt.component.GamePanel;
 import gt.component.MainFrame;
 import gt.gamestate.GameStateManager;
@@ -16,10 +13,9 @@ public class ColorFallMain {
     private static final String TITLE = "Color Fall";
 
     public static void main(String[] args) {
-        ComponentCreator.setCrossPlatformLookAndFeel();
+        MainFrame mainFrame = new MainFrame(TITLE);
+        GamePanel mainPanel = mainFrame.getGamePanel();
 
-        GamePanel mainPanel = new GamePanel("ColorFall");
-        mainPanel.setPreferredSize(new Dimension(ComponentCreator.DEFAULT_WIDTH, ComponentCreator.DEFAULT_HEIGHT));
         GameStateManager gameStateManager = mainPanel.getGameStateManager();
 
         MenuItem startGameMenuItem = new MenuItem("Start",
@@ -51,8 +47,6 @@ public class ColorFallMain {
         ColorFallSettings.loadSettings();
 
         gameStateManager.setGameState(mainMenuState);
-
-        MainFrame mainFrame = new MainFrame(TITLE, mainPanel);
 
         mainFrame.show();
     }
